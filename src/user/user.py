@@ -51,7 +51,7 @@ def get_all():
     ), 404
 
 
-@app.route("/customer/<int:cid123>")
+@app.route("/customer/<int:123>")
 def find_by_cid123(cid123):
     customer = Customer.query.filter_by(cid123=cid123).first()
     if customer:

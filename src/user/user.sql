@@ -10,12 +10,12 @@ USE `customer`;
 
 DROP TABLE IF EXISTS `customer`;
 CREATE TABLE IF NOT EXISTS `customer` (
-  `cid` INT(11) NOT NULL,
+  `cid` int(11) NOT NULL,
   `name` varchar(30) NOT NULL,
   `email` varchar(70) NOT NULL,
   `c_address` varchar(150) NOT NULL,
-  `billing_address` VARCHAR(150) NOT NULL,
-  `phone` INT(20) NOT NULL,
+  `billing_address` varchar(150) NOT NULL,
+  `phone` int(20) NOT NULL,
 
   PRIMARY KEY (`CID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

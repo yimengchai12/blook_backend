@@ -40,62 +40,62 @@ class Customer(db.Model):
         return {"id": self.id, "first_name": self.first_name, "last_name": self.last_name, "email": self.email, "gender" :self.gender, "address": self.address, "billing_address": self.billing_address, "phone": self.phone}
 
 
-@app.route("/activity")
+@app.route("/customer")
 def get_all():
-    activitylist = Activity.query.all()
+    activitylist = Customer.query.all()
     if len(activitylist):
         return jsonify(
             {
                 "code": 200,
                 "data": {
-                    "activities": [activity.json() for activity in activitylist]
+                    "activities": [customer.json() for customer in activitylist]
                 }
             }
         )
     return jsonify(
         {
             "code": 404,
-            "message": "There are no activity."
+            "message": "There are no customer."
         }
     ), 404
 
 
-@app.route("/activity/<string:id>")
+@app.route("/customer/<string:id>")
 def find_by_isbn13(id):
-    activity = Activity.query.filter_by(id=id).first()
-    if activity:
+    customer = Customer.query.filter_by(id=id).first()
+    if customer:
         return jsonify(
             {
                 "code": 200,
-                "data": activity.json()
+                "data": customer.json()
             }
         )
     return jsonify(
         {
             "code": 404,
-            "message": "Activity not found."
+            "message": "Customer not found."
         }
     ), 404
 
 
-@app.route("/activity/<string:id>", methods=['POST'])
+@app.route("/customer/<string:id>", methods=['POST'])
 def create_book(id):
-    if (Activity.query.filter_by(id=id).first()):
+    if (Customer.query.filter_by(id=id).first()):
         return jsonify(
             {
                 "code": 400,
                 "data": {
                     "id": id
                 },
-                "message": "Activity already exists."
+                "message": "Customer already exists."
             }
         ), 400
 
     data = request.get_json()
-    activity = Activity(id, **data)
+    customer = Customer(id, **data)
 
     try:
-        db.session.add(activity)
+        db.session.add(customer)
         db.session.commit()
     except:
         return jsonify(
@@ -104,34 +104,34 @@ def create_book(id):
                 "data": {
                     "id": id
                 },
-                "message": "An error occurred creating the activity."
+                "message": "An error occurred creating the customer."
             }
         ), 500
 
     return jsonify(
         {
             "code": 201,
-            "data": activity.json()
+            "data": customer.json()
         }
     ), 201
 
 
-@app.route("/activity/<string:id>", methods=['PUT'])
+@app.route("/customer/<string:id>", methods=['PUT'])
 def update_book(id):
-    activity = Activity.query.filter_by(id=id).first()
-    if activity:
+    customer = Customer.query.filter_by(id=id).first()
+    if customer:
         data = request.get_json()
         if data['title']:
-            activity.title = data['title']
+            customer.title = data['title']
         if data['price']:
-            activity.price = data['price']
+            customer.price = data['price']
         if data['availability']:
-            activity.availability = data['availability'] 
+            customer.availability = data['availability'] 
         db.session.commit()
         return jsonify(
             {
                 "code": 200,
-                "data": activity.json()
+                "data": customer.json()
             }
         )
     return jsonify(
@@ -140,16 +140,16 @@ def update_book(id):
             "data": {
                 "id": id
             },
-            "message": "Activity not found."
+            "message": "Customer not found."
         }
     ), 404
 
 
-@app.route("/activity/<string:id>", methods=['DELETE'])
+@app.route("/customer/<string:id>", methods=['DELETE'])
 def delete_book(id):
-    activity = Activity.query.filter_by(id=id).first()
-    if activity:
-        db.session.delete(activity)
+    customer = Customer.query.filter_by(id=id).first()
+    if customer:
+        db.session.delete(customer)
         db.session.commit()
         return jsonify(
             {
@@ -165,7 +165,7 @@ def delete_book(id):
             "data": {
                 "id": id
             },
-            "message": "Activity not found."
+            "message": "Customer not found."
         }
     ), 404
 

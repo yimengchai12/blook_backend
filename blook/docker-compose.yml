@@ -26,14 +26,17 @@ services:
   #######################################################
   # Shipping Record: The Shipping Record microservice
   #######################################################
-  # shipping_record:
-  #   build:
-  #     context: ./
-  #     dockerfile: shipping_record.Dockerfile
-  #   image: blook/shipping_record:esd
-  #   restart: always
-  #   environment:
-  #     PYTHONUNBUFFERED: 1
+  customer:
+    build:
+      context: ./
+      dockerfile: customer.Dockerfile
+    image: customer:latest
+    restart: always
+    environment:
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/customer
+      PYTHONUNBUFFERED: 1
+    ports: 
+      - "5002:5002"
 
   ####################################
   # RabbitMQ: The messaging broker   

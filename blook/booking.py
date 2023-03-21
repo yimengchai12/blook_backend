@@ -23,22 +23,36 @@ CORS(app)
 class Booking(db.Model):
     __tablename__ = 'booking'
 
-    booking_id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     customer_id = db.Column(db.String(32), nullable=False)
     activity_id = db.Column(db.Integer, nullable=True)
-    datetime = db.Column(db.DateTime, nullable=False, default=datetime.now)
-    payment_amount = db.Column(db.Float(precision=2), nullable=False)
+    booking_datetime = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    datetime = db.Column(db.DateTime, nullable=False)
     total_pax = db.Column(db.Integer, nullable=True)
+    payment_amount = db.Column(db.Float(precision=2), nullable=False)
+    status = db.Column(db.String(3), nullable=False)
     
+    def __init__(self, id, customer_id, activity_id, booking_datetime, datetime, total_pax, payment_amount, status):
+        self.id = id
+        self.customer_id = customer_id
+        self.activity_id = activity_id
+        self.booking_datetime = booking_datetime
+        self.datetime = datetime
+        self.total_pax = total_pax
+        self.payment_amount = payment_amount
+        self.status = status
+
 
     def json(self):
         dto = {
-            'booking_id': self.booking_id,
-            'customer_id': self.activity_id,
+            'id': self.id,
+            'customer_id': self.customer_id,
             'activity_id': self.activity_id,
-            'datetime': self.datetime,
+            'booking_datetime': self.booking_datetime,
+            'datetime': self.booking_datetime,
+            'total_pax': self.total_pax,
             'payment_amount': self.payment_amount,
-            'total_pax': self.total_pax
+            'status': self.status
         }
         return dto
 
@@ -51,7 +65,7 @@ def get_all():
             {
                 "code": 200,
                 "data": {
-                    "orders": [booking.json() for booking in bookinglist]
+                    "bookings": [booking.json() for booking in bookinglist]
                 }
             }
         )
@@ -65,7 +79,7 @@ def get_all():
 
 @app.route("/booking/<string:booking_id>")
 def find_by_order_id(booking_id):
-    booking = Booking.query.filter_by(booking_id=booking_id).first()
+    booking = Booking.query.filter_by(id=booking_id).first()
     if booking:
         return jsonify(
             {
@@ -117,7 +131,7 @@ def create_order():
 @app.route("/booking/<string:booking_id>", methods=['PUT'])
 def update_order(booking_id):
     try:
-        booking = Booking.query.filter_by(booking_id=booking_id).first()
+        booking = Booking.query.filter_by(id=booking_id).first()
         if not booking:
             return jsonify(
                 {
@@ -154,4 +168,4 @@ def update_order(booking_id):
 
 if __name__ == '__main__':
     print("This is flask for " + os.path.basename(__file__) + ": manage orders ...")
-    app.run(host='0.0.0.0', port=8001, debug=True)
+    app.run(host='0.0.0.0', port=5005, debug=True)

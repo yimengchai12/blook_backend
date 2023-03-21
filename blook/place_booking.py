@@ -15,8 +15,8 @@ app = Flask(__name__)
 CORS(app)
 
 #book_URL = "http://localhost:5000/book"
-order_URL = environ.get('order_URL') or "http://localhost:5001/order" 
-shipping_record_URL = environ.get('shipping_record_URL') or "http://localhost:5002/shipping_record" 
+booking_URL = environ.get('booking_URL') or "http://localhost:8001/booking" 
+# shipping_record_URL = environ.get('shipping_record_URL') or "http://localhost:5002/shipping_record" 
 #activity_log_URL = "http://localhost:5003/activity_log"
 #error_URL = "http://localhost:5004/error"
 

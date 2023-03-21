@@ -12,24 +12,32 @@ db = SQLAlchemy(app)
 
 CORS(app)
 
-class Activity(db.Model):
-    __tablename__ = 'activity'
+class Customer(db.Model):
+    __tablename__ = 'customer'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), nullable=False)
-    description = db.Column(db.String(255), nullable=False)
-    price = db.Column(db.Float(precision=2), nullable=False)
+    first_name = db.Column(db.String(50), nullable=False)
+    last_name = db.Column(db.String(50), nullable=True)
+    email = db.Column(db.String(255), nullable=False)
+    gender = db.Column(db.String(7), nullable=False)
     address = db.Column(db.String(50), nullable=False)
+    billing_address = db.Column(db.String(50), nullable=False)
+    phone = db.Column(db.String(50), nullable=False)
 
-    def __init__(self, id, name, description, price, address):
+    def __init__(self, id, first_name, last_name, email, gender, address, billing_address, phone):
         self.id = id
-        self.name = name
-        self.description = description
-        self.price = price
-        self.addres = address
+        self.first_name = first_name
+        self.last_name = last_name
+        self.email = email
+        self.gender = gender
+        self.address = address
+        self.billing_address = billing_address
+        self.phone = phone
+        
+        
 
     def json(self):
-        return {"id": self.id, "name": self.name, "description": self.description, "price": self.price, "address": self.address}
+        return {"id": self.id, "first_name": self.first_name, "last_name": self.last_name, "email": self.email, "gender" :self.gender, "address": self.address, "billing_address": self.billing_address, "phone": self.phone}
 
 
 @app.route("/activity")
@@ -163,4 +171,4 @@ def delete_book(id):
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5002, debug=True)

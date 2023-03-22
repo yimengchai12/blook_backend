@@ -12,7 +12,7 @@ import json
 from os import environ
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/order'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/review'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
@@ -20,148 +20,133 @@ db = SQLAlchemy(app)
 
 CORS(app)  
 
-class Order(db.Model):
-    __tablename__ = 'order'
+class Review(db.Model):
+    __tablename__ = 'review'
 
-    order_id = db.Column(db.Integer, primary_key=True)
+    review_id = db.Column(db.Integer, primary_key=True)
     customer_id = db.Column(db.String(32), nullable=False)
-    status = db.Column(db.String(10), nullable=False)
+    activity_id = db.Column(db.String(32), nullable=False)
+    rating = db.Column(db.Integer, nullable=False)
+    review_text = db.Column(db.String(255), nullable=False)
     created = db.Column(db.DateTime, nullable=False, default=datetime.now)
-    modified = db.Column(db.DateTime, nullable=False,
-                         default=datetime.now, onupdate=datetime.now)
+    
+    def __init__(self, review_id, customer_id, activity_id, rating, review_text, created):
+        self.review_id = review_id
+        self.customer_id = customer_id
+        self.activity_id = activity_id
+        self.rating = rating
+        self.review_text = review_text
+        self.created = created
 
     def json(self):
         dto = {
-            'order_id': self.order_id,
+            'review_id': self.review_id,
             'customer_id': self.customer_id,
-            'status': self.status,
+            'activity_id': self.activity_id,
+            'rating': self.rating,
+            'review_text': self.review_text,
             'created': self.created,
-            'modified': self.modified
         }
-
-        dto['order_item'] = []
-        for oi in self.order_item:
-            dto['order_item'].append(oi.json())
-
         return dto
 
 
-class Order_Item(db.Model):
-    __tablename__ = 'order_item'
-
-    item_id = db.Column(db.Integer, primary_key=True)
-    order_id = db.Column(db.ForeignKey(
-        'order.order_id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True)
-
-    book_id = db.Column(db.String(13), nullable=False)
-    quantity = db.Column(db.Integer, nullable=False)
-
-    # order_id = db.Column(db.String(36), db.ForeignKey('order.order_id'), nullable=False)
-    # order = db.relationship('Order', backref='order_item')
-    order = db.relationship(
-        'Order', primaryjoin='Order_Item.order_id == Order.order_id', backref='order_item')
-
-    def json(self):
-        return {'item_id': self.item_id, 'book_id': self.book_id, 'quantity': self.quantity, 'order_id': self.order_id}
-
-
-@app.route("/order")
+@app.route("/review")
 def get_all():
-    orderlist = Order.query.all()
-    if len(orderlist):
+    reviewlist = Review.query.all()
+    if len(reviewlist):
         return jsonify(
             {
                 "code": 200,
                 "data": {
-                    "orders": [order.json() for order in orderlist]
+                    "reviews": [review.json() for review in reviewlist]
                 }
             }
         )
     return jsonify(
         {
             "code": 404,
-            "message": "There are no orders."
+            "message": "There are no reviews."
         }
     ), 404
 
 
-@app.route("/order/<string:order_id>")
-def find_by_order_id(order_id):
-    order = Order.query.filter_by(order_id=order_id).first()
-    if order:
+@app.route("/review/<string:activity_id>")
+def find_by_activity_id(activity_id):
+    review = Review.query.filter_by(activity_id=activity_id).first()
+    if review:
         return jsonify(
             {
                 "code": 200,
-                "data": order.json()
+                "data": review.json()
             }
         )
     return jsonify(
         {
             "code": 404,
             "data": {
-                "order_id": order_id
+                "activity_id": activity_id
             },
-            "message": "Order not found."
+            "message": "Activity not found."
         }
     ), 404
 
 
-@app.route("/order", methods=['POST'])
-def create_order():
+@app.route("/review", methods=['POST'])
+def create_review():
     customer_id = request.json.get('customer_id', None)
-    order = Order(customer_id=customer_id, status='NEW')
-
-    cart_item = request.json.get('cart_item')
-    for item in cart_item:
-        order.order_item.append(Order_Item(
-            book_id=item['book_id'], quantity=item['quantity']))
-
+    activity_id = request.json.get('activity_id', None)
+    rating = request.json.get('rating', None)
+    review_text = request.json.get('review_text', None)
+    review = Review(customer_id=customer_id, activity_id=activity_id, rating=rating, review_text=review_text)
+    # review = Order(customer_id=customer_id, status='NEW')
     try:
-        db.session.add(order)
+        db.session.add(review)
         db.session.commit()
     except Exception as e:
         return jsonify(
             {
                 "code": 500,
-                "message": "An error occurred while creating the order. " + str(e)
+                "message": "An error occurred while creating the review. " + str(e)
             }
         ), 500
     
-    print(json.dumps(order.json(), default=str)) # convert a JSON object to a string and print
+    print(json.dumps(review.json(), default=str)) # convert a JSON object to a string and print
     print()
 
     return jsonify(
         {
             "code": 201,
-            "data": order.json()
+            "data": review.json()
         }
     ), 201
 
 
-@app.route("/order/<string:order_id>", methods=['PUT'])
-def update_order(order_id):
+@app.route("/review/<string:review_id>", methods=['PUT'])
+def update_review(review_id):
     try:
-        order = Order.query.filter_by(order_id=order_id).first()
-        if not order:
+        review = Review.query.filter_by(review_id=review_id).first()
+        if not review:
             return jsonify(
                 {
                     "code": 404,
                     "data": {
-                        "order_id": order_id
+                        "review_id": review_id
                     },
-                    "message": "Order not found."
+                    "message": "Review not found."
                 }
             ), 404
 
         # update status
         data = request.get_json()
-        if data['status']:
-            order.status = data['status']
+        if data['rating']:
+            review.rating = data['rating']
+        if data['review_text']:
+            review.review_text = data['review_text']
             db.session.commit()
             return jsonify(
                 {
                     "code": 200,
-                    "data": order.json()
+                    "data": review.json()
                 }
             ), 200
     except Exception as e:
@@ -169,13 +154,13 @@ def update_order(order_id):
             {
                 "code": 500,
                 "data": {
-                    "order_id": order_id
+                    "review_id": review_id
                 },
-                "message": "An error occurred while updating the order. " + str(e)
+                "message": "An error occurred while updating the review. " + str(e)
             }
         ), 500
 
 
 if __name__ == '__main__':
     print("This is flask for " + os.path.basename(__file__) + ": manage orders ...")
-    app.run(host='0.0.0.0', port=5003, debug=True)
+    app.run(host='0.0.0.0', port=5004, debug=True)

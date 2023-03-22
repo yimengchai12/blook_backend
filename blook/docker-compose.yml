@@ -18,7 +18,23 @@ services:
       dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/booking
       PYTHONUNBUFFERED: 1
     ports:
-      - "5005:5005"
+      - "5002:5002"
+
+
+    ###################################
+  # Review: The Review microservice
+  ###################################
+  review:
+    build:
+      context: ./
+      dockerfile: review.Dockerfile
+    image: review:latest
+    restart: always
+    environment:
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/review
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5004:5004"
 
 
 
@@ -36,7 +52,7 @@ services:
       dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/customer
       PYTHONUNBUFFERED: 1
     ports: 
-      - "5002:5002"
+      - "5003:5003"
 
   ####################################
   # RabbitMQ: The messaging broker   
@@ -119,4 +135,4 @@ services:
       dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/activity
       PYTHONUNBUFFERED: 1
     ports:
-      - "5000:5000"
+      - "5001:5001"

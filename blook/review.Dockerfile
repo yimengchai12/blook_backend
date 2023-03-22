@@ -2,5 +2,5 @@ FROM python:3-slim
 WORKDIR /usr/src/app
 COPY http.reqs.txt ./
 RUN python -m pip install --no-cache-dir -r http.reqs.txt
-COPY ./order.py ./
-CMD [ "python", "./order.py" ]
+COPY ./review.py ./
+CMD [ "python", "./review.py" ]

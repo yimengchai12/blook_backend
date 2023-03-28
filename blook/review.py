@@ -72,12 +72,12 @@ def get_all():
 
 @app.route("/review/<string:activity_id>")
 def find_by_activity_id(activity_id):
-    review = Review.query.filter_by(activity_id=activity_id).first()
-    if review:
+    reviewlist = Review.query.filter_by(activity_id=activity_id).all()
+    if reviewlist:
         return jsonify(
             {
                 "code": 200,
-                "data": review.json()
+                "data": [review.json() for review in reviewlist]
             }
         )
     return jsonify(

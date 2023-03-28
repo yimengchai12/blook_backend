@@ -24,17 +24,17 @@ services:
     ###################################
   # Review: The Review microservice
   ###################################
-  review:
-    build:
-      context: ./
-      dockerfile: review.Dockerfile
-    image: review:latest
-    restart: always
-    environment:
-      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/review
-      PYTHONUNBUFFERED: 1
-    ports:
-      - "5004:5004"
+  # review:
+  #   build:
+  #     context: ./
+  #     dockerfile: review.Dockerfile
+  #   image: review:latest
+  #   restart: always
+  #   environment:
+  #     dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/review
+  #     PYTHONUNBUFFERED: 1
+  #   ports:
+  #     - "5004:5004"
 
 
 
@@ -56,30 +56,29 @@ services:
   #######################################################
   # Paypal Record: The paypal Record microservice
   #######################################################
-  payment:
-    build:
-      context: ./
-      dockerfile: payment.Dockerfile
-    image: payment:latest
-    restart: always
-    environment:
-      # dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/customer
-      PYTHONUNBUFFERED: 1
-    ports: 
-      - "5005:5005"
+  # payment:
+  #   build:
+  #     context: ./
+  #     dockerfile: payment.Dockerfile
+  #   image: payment:latest
+  #   restart: always
+  #   environment:
+  #     PYTHONUNBUFFERED: 1
+  #   ports: 
+  #     - "5006:5006"
 
   ####################################
   # RabbitMQ: The messaging broker   
   ####################################
-  # rabbitmq:
-  #   image: rabbitmq:3-management
-  #   hostname: esd-rabbit
-  #   restart: always
-  #   ports:
-  #     - "5672:5672"
-  #     - "15672:15672"
-  #   volumes: 
-  #     - rabbitmq_data:/var/lib/rabbitmq
+  rabbitmq:
+    image: rabbitmq:3-management
+    hostname: esd-rabbit
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes: 
+      - rabbitmq_data:/var/lib/rabbitmq
       
   #################################################
   # Activity Log: The Activity Log microservice
@@ -104,7 +103,7 @@ services:
   #   build:
   #     context: ./
   #     dockerfile: error.Dockerfile
-  #   image: blook/error:esd
+  #   image: error:esd
   #   restart: always
   #   depends_on:
   #     - rabbitmq
@@ -116,37 +115,40 @@ services:
   ###############################################
   # Place Booking: The Place Booking microservice
   ###############################################
-  # place_order:
-  #   build:
-  #     context: ./
-  #     dockerfile: place_booking.Dockerfile
-  #   image: blook/place_booking:esd
-  #   restart: always
-  #   depends_on:
-  #     - activity
-  #     # - booking_log
-  #     # - error
-  #     - rabbitmq
-  #   environment:
-  #     rabbit_host: rabbitmq
-  #     rabbit_port: 5672
-  #     order_URL: http://booking:8001/booking
-  #     # shipping_record_URL: http://shipping_record:5002/shipping_record 
-  #     PYTHONUNBUFFERED: 1
-  #   ports:
-  #     - "5100:5100"
+  place_booking:
+    build:
+      context: ./
+      dockerfile: place_booking.Dockerfile
+    image: place_booking:latest
+    restart: always
+    depends_on:
+      # - activity
+      - customer
+      - booking
+      # - booking_log
+      # - error
+      # - rabbitmq
+    environment:
+      rabbit_host: rabbitmq
+      rabbit_port: 5672
+      booking_URL: http://booking:5002/booking
+      customer_URL: http://customer:5003/customer
+      # shipping_record_URL: http://shipping_record:5002/shipping_record 
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5100:5100"
 
   ##################################
   # Activity: The ACtivity microservice
   ##################################
-  activity:
-    build:
-      context: ./
-      dockerfile: activity.Dockerfile
-    image: activity:latest
-    restart: always
-    environment:
-      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/activity
-      PYTHONUNBUFFERED: 1
-    ports:
-      - "5001:5001"
+  # activity:
+  #   build:
+  #     context: ./
+  #     dockerfile: activity.Dockerfile
+  #   image: activity:latest
+  #   restart: always
+  #   environment:
+  #     dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/activity
+  #     PYTHONUNBUFFERED: 1
+  #   ports:
+  #     - "5001:5001"

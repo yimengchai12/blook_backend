@@ -32,15 +32,15 @@ class Booking(db.Model):
     payment_amount = db.Column(db.Float(precision=2), nullable=False)
     status = db.Column(db.String(3), nullable=False)
     
-    def __init__(self, id, customer_id, activity_id, booking_datetime, datetime, total_pax, payment_amount, status):
-        self.id = id
-        self.customer_id = customer_id
-        self.activity_id = activity_id
-        self.booking_datetime = booking_datetime
-        self.datetime = datetime
-        self.total_pax = total_pax
-        self.payment_amount = payment_amount
-        self.status = status
+    # def __init__(self, id, customer_id, activity_id, booking_datetime, datetime, total_pax, payment_amount, status):
+    #     self.id = id
+    #     self.customer_id = customer_id
+    #     self.activity_id = activity_id
+    #     self.booking_datetime = booking_datetime
+    #     self.datetime = datetime
+    #     self.total_pax = total_pax
+    #     self.payment_amount = payment_amount
+    #     self.status = status
 
 
     def json(self):

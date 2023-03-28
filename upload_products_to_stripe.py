@@ -1,9 +1,12 @@
 from sqlalchemy import create_engine, Table, MetaData
 import stripe
 
-stripe.api_key = "sk_test_51MqXdHE3thje2p8MDiPdiAf9rL1wQHZirFYfmKIetPDBkvyX2avd9BtxfIJ1BpThFRSTyoBSGBbk48BQygVYXkWo00kAK2chaW"
+stripe.api_key = "sk_test_51Miv0mDVT8kjXSeFhyISeAE8DvBk8A2i1naRDbWDYNEblx1IiBTkbG5fXBG38daqRngJSiq1cpx25hSkZ1OPNrTN00oqJCRNJF"
+
+
+# "sk_test_51MqXdHE3thje2p8MDiPdiAf9rL1wQHZirFYfmKIetPDBkvyX2avd9BtxfIJ1BpThFRSTyoBSGBbk48BQygVYXkWo00kAK2chaW"
 # create a connection to the database
-engine = create_engine('mysql+mysqlconnector://root:root@localhost:3306/activity')
+engine = create_engine('mysql+mysqlconnector://root@localhost:3306/activity')
 
 # create a metadata object and reflect the database schema
 metadata = MetaData()

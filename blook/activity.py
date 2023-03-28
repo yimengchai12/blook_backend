@@ -53,7 +53,7 @@ def get_all():
 
 
 @app.route("/activity/<string:id>")
-def find_by_isbn13(id):
+def find_by_id(id):
     activity = Activity.query.filter_by(id=id).first()
     if activity:
         return jsonify(
@@ -71,7 +71,7 @@ def find_by_isbn13(id):
 
 
 @app.route("/activity/<string:id>", methods=['POST'])
-def create_book(id):
+def create_activity(id):
     if (Activity.query.filter_by(id=id).first()):
         return jsonify(
             {
@@ -109,7 +109,7 @@ def create_book(id):
 
 
 @app.route("/activity/<string:id>", methods=['PUT'])
-def update_book(id):
+def update_activity(id):
     activity = Activity.query.filter_by(id=id).first()
     if activity:
         data = request.get_json()
@@ -138,7 +138,7 @@ def update_book(id):
 
 
 @app.route("/activity/<string:id>", methods=['DELETE'])
-def delete_book(id):
+def delete_activity(id):
     activity = Activity.query.filter_by(id=id).first()
     if activity:
         db.session.delete(activity)

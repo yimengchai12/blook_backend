@@ -78,7 +78,7 @@ def get_all():
 
 
 @app.route("/booking/<string:booking_id>")
-def find_by_order_id(booking_id):
+def find_by_booking_id(booking_id):
     booking = Booking.query.filter_by(id=booking_id).first()
     if booking:
         return jsonify(
@@ -99,7 +99,7 @@ def find_by_order_id(booking_id):
 
 
 @app.route("/booking", methods=['POST'])
-def create_order():
+def create_booking():
     customer_id = request.json.get('customer_id', None)
     activity_id = request.json.get('activity_id', None)
     payment_amount = request.json.get('payment_amount', None)

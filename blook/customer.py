@@ -61,7 +61,7 @@ def get_all():
 
 
 @app.route("/customer/<string:id>")
-def find_by_isbn13(id):
+def find_by_id(id):
     customer = Customer.query.filter_by(id=id).first()
     if customer:
         return jsonify(

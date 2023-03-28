@@ -79,7 +79,7 @@ def find_by_isbn13(id):
 
 
 @app.route("/customer/<string:id>", methods=['POST'])
-def create_book(id):
+def create_customer(id):
     if (Customer.query.filter_by(id=id).first()):
         return jsonify(
             {
@@ -117,7 +117,7 @@ def create_book(id):
 
 
 @app.route("/customer/<string:id>", methods=['PUT'])
-def update_book(id):
+def update_customer(id):
     customer = Customer.query.filter_by(id=id).first()
     if customer:
         data = request.get_json()
@@ -146,7 +146,7 @@ def update_book(id):
 
 
 @app.route("/customer/<string:id>", methods=['DELETE'])
-def delete_book(id):
+def delete_customer(id):
     customer = Customer.query.filter_by(id=id).first()
     if customer:
         db.session.delete(customer)

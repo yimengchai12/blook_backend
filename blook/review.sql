@@ -22,7 +22,7 @@ VALUES
   (1, 4, 5, 'Glamping was a unique experience that we thoroughly enjoyed. The tents were spacious and comfortable, and the campfire under the stars was magical.'),
   (8, 5, 4, 'The golf course was beautiful and well-maintained. We had a great time playing.'),
   (4, 6, 3, 'Kite surfing was harder than we expected, but the instructor was very patient and helpful.'),
-  (7, 4, 4, 'The museum tour was very informative and well-organized. We learned a lot about the city\'s history.'),
+  (7, 4, 4, "The museum tour was very informative and well-organized. We learned a lot about the city\'s history."),
   (10, 8, 3, 'Paintball was fun, but the equipment could have been better.'),
   (20, 9, 5, 'Shark cage diving was an incredible experience! We saw so many different species of sharks up close.'),
   (15, 10, 4, 'Ziplining was a great way to get an adrenaline rush while taking in the beautiful views.'),

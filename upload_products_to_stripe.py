@@ -22,12 +22,15 @@ with engine.connect() as conn:
     # iterate over the rows in the result set
     for row in result_set:
         # process each row as needed
-        stripe.Product.create(
-            id=row[0],
-            name=row[1],
-            default_price_data={
-                "unit_amount": int(row[3]*100),
-                "currency": "sgd",
-            },
-             expand=["default_price"],
-        )
+        try:
+            stripe.Product.create(
+                id=row[0],
+                name=row[1],
+                default_price_data={
+                    "unit_amount": int(row[3]*100),
+                    "currency": "sgd",
+                },
+                expand=["default_price"],
+            )
+        except:
+            pass

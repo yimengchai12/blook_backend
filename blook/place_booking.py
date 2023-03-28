@@ -17,21 +17,21 @@ CORS(app)
 #book_URL = "http://localhost:5000/book"
 booking_URL = environ.get('booking_URL') or "http://localhost:8001/booking" 
 # shipping_record_URL = environ.get('shipping_record_URL') or "http://localhost:5002/shipping_record" 
-#activity_log_URL = "http://localhost:5003/activity_log"
+#booking_log_URL = "http://localhost:5003/activity_log"
 #error_URL = "http://localhost:5004/error"
 
 
-@app.route("/place_order", methods=['POST'])
-def place_order():
+@app.route("/place_booking", methods=['POST'])
+def place_booking():
     # Simple check of input format and data of the request are JSON
     if request.is_json:
         try:
-            order = request.get_json()
-            print("\nReceived an order in JSON:", order)
+            booking = request.get_json()
+            print("\nReceived an order in JSON:", booking)
 
             # do the actual work
             # 1. Send order info {cart items}
-            result = processPlaceOrder(order)
+            result = processBookingOrder(booking)
             print('\n------------------------')
             print('\nresult: ', result)
             return jsonify(result), result["code"]
@@ -55,16 +55,16 @@ def place_order():
     }), 400
 
 
-def processPlaceOrder(order):
+def processBookingOrder(booking):
     # 2. Send the order info {cart items}
     # Invoke the order microservice
     print('\n-----Invoking order microservice-----')
-    order_result = invoke_http(order_URL, method='POST', json=order)
-    print('order_result:', order_result)
+    booking_result = invoke_http(booking_URL, method='POST', json=booking)
+    print('order_result:', booking_result)
   
     # Check the order result; if a failure, send it to the error microservice.
-    code = order_result["code"]
-    message = json.dumps(order_result)
+    code = booking_result["code"]
+    message = json.dumps(booking_result)
 
     amqp_setup.check_setup()
 
@@ -82,13 +82,13 @@ def processPlaceOrder(order):
         # - reply from the invocation is not used;
         # continue even if this invocation fails        
         print("\nOrder status ({:d}) published to the RabbitMQ Exchange:".format(
-            code), order_result)
+            code), booking_result)
 
         # 7. Return error
         return {
             "code": 500,
-            "data": {"order_result": order_result},
-            "message": "Order creation failure sent for error handling."
+            "data": {"booking_result": booking_result},
+            "message": "booking creation failure sent for error handling."
         }
 
     # Notice that we are publishing to "Activity Log" only when there is no error in order creation.
@@ -100,10 +100,10 @@ def processPlaceOrder(order):
         # 4. Record new order
         # record the activity log anyway
         #print('\n\n-----Invoking activity_log microservice-----')
-        print('\n\n-----Publishing the (order info) message with routing_key=order.info-----')        
+        print('\n\n-----Publishing the (booking info) message with routing_key=order.info-----')        
 
         # invoke_http(activity_log_URL, method="POST", json=order_result)            
-        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="order.info", 
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="booking.info", 
             body=message)
     
     print("\nOrder published to RabbitMQ Exchange.\n")
@@ -114,44 +114,44 @@ def processPlaceOrder(order):
     # Invoke the shipping record microservice
     print('\n\n-----Invoking shipping_record microservice-----')    
     
-    shipping_result = invoke_http(
-        shipping_record_URL, method="POST", json=order_result['data'])
-    print("shipping_result:", shipping_result, '\n')
+    # shipping_result = invoke_http(
+    #     shipping_record_URL, method="POST", json=order_result['data'])
+    # print("shipping_result:", shipping_result, '\n')
 
     # Check the shipping result;
     # if a failure, send it to the error microservice.
-    code = shipping_result["code"]
-    if code not in range(200, 300):
+    # code = shipping_result["code"]
+    # if code not in range(200, 300):
         # Inform the error microservice
         #print('\n\n-----Invoking error microservice as shipping fails-----')
-        print('\n\n-----Publishing the (shipping error) message with routing_key=shipping.error-----')
+        # print('\n\n-----Publishing the (shipping error) message with routing_key=shipping.error-----')
 
         # invoke_http(error_URL, method="POST", json=shipping_result)
-        message = json.dumps(shipping_result)
-        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="shipping.error", 
-            body=message, properties=pika.BasicProperties(delivery_mode = 2))
+        # message = json.dumps(shipping_result)
+        # amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="shipping.error", 
+        #     body=message, properties=pika.BasicProperties(delivery_mode = 2))
 
-        print("\nShipping status ({:d}) published to the RabbitMQ Exchange:".format(
-            code), shipping_result)
+        # print("\nShipping status ({:d}) published to the RabbitMQ Exchange:".format(
+        #     code), shipping_result)
 
-        # 7. Return error
-        return {
-            "code": 400,
-            "data": {
-                "order_result": order_result,
-                "shipping_result": shipping_result
-            },
-            "message": "Simulated shipping record error sent for error handling."
-        }
+        # # 7. Return error
+        # return {
+        #     "code": 400,
+        #     "data": {
+        #         "order_result": order_result,
+        #         "shipping_result": shipping_result
+        #     },
+        #     "message": "Simulated shipping record error sent for error handling."
+        # }
 
     # 7. Return created order, shipping record
-    return {
-        "code": 201,
-        "data": {
-            "order_result": order_result,
-            "shipping_result": shipping_result
-        }
-    }
+    # return {
+    #     "code": 201,
+    #     "data": {
+    #         "order_result": order_result,
+    #         "shipping_result": shipping_result
+    #     }
+    # }
 
 
 # Execute this program if it is run as a main script (not by 'import')

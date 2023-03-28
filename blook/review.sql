@@ -33,3 +33,23 @@ VALUES
   (16, 15, 4, 'Tandem paragliding was a thrilling experience! The views from up high were absolutely breathtaking.'),
   (24, 16, 4, 'The theme park rides were so much fun! There were rides for all ages and we had a blast.'),
   (11, 17, 4, 'The tree top adventures course was challenging, but we had a great time navigating through the obstacles.');
+  (15, 3, 4, 'The guided city walking tour was a great way to see the sights and learn about the history of the city. The guide was very knowledgeable.')
+(7, 8, 5, 'The snorkeling excursion was amazing! We saw so many colorful fish and the water was crystal clear.')
+(22, 1, 3, 'The airplane tour was a bit too short for my liking, but the pilot was very skilled and gave us a great view of the city.')
+(31, 5, 2, 'The hiking trail was not well-maintained and we had a difficult time finding the trailhead. The views were nice once we got there though.')
+(9, 4, 5, 'The museum tour was excellent! The exhibits were very interesting and the guide was very passionate about the history.')
+(26, 10, 4, 'The wine tasting was a great experience. The selection was fantastic and the staff were very friendly and informative.')
+(13, 6, 3, 'The beach was beautiful, but it was a bit crowded and noisy.')
+(19, 2, 5, 'The hot air balloon ride was absolutely amazing! The views were breathtaking and the pilot was very friendly.')
+(2, 11, 2, "The amusement park was very crowded and the lines were extremely long. We didn't have much fun.")
+(35, 7, 4, 'The zoo was a great place to spend the afternoon. The animals were well-cared for and the exhibits were very informative.')
+(20, 12, 5, 'The boat tour was fantastic! We saw so many beautiful sights and the guide was very knowledgeable.')
+(27, 9, 3, 'The food tour was interesting, but some of the stops were a bit underwhelming.')
+(10, 3, 5, 'The city bike tour was one of the best parts of our trip! The guide was very friendly and took us to some great hidden spots.')
+(16, 1, 4, 'The helicopter tour was amazing! We got to see so many beautiful sights and the pilot was very skilled.')
+(33, 5, 2, 'The hiking trail was very difficult and we had a hard time finding our way. The views were nice though.')
+(4, 4, 3, 'The museum was interesting, but some of the exhibits were a bit outdated.')
+(28, 10, 5, 'The wine tasting was a great experience! The selection was fantastic and the staff were very knowledgeable.')
+(14, 6, 4, 'The beach was beautiful and the water was perfect for swimming. It was a bit crowded though.')
+(21, 2, 3, 'The hot air balloon ride was a bit too short for my liking, but the views were still very beautiful.')
+(38, 11, 2, "The amusement park was very crowded and the lines were extremely long. It wasn't worth the money in my opinion.")

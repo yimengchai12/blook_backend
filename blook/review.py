@@ -70,9 +70,9 @@ def get_all():
     ), 404
 
 
-@app.route("/review/<string:review_id>")
-def find_by_review_id(review_id):
-    review = Review.query.filter_by(review_id=review_id).first()
+@app.route("/review/<string:activity_id>")
+def find_by_activity_id(activity_id):
+    review = Review.query.filter_by(activity_id=activity_id).first()
     if review:
         return jsonify(
             {

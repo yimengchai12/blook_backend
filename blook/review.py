@@ -25,15 +25,15 @@ class Review(db.Model):
 
     review_id = db.Column(db.Integer, primary_key=True)
     customer_id = db.Column(db.String(32), nullable=False)
-    review_id = db.Column(db.String(32), nullable=False)
+    activity_id = db.Column(db.String(32), nullable=False)
     rating = db.Column(db.Integer, nullable=False)
     review_text = db.Column(db.String(255), nullable=False)
     created = db.Column(db.DateTime, nullable=False, default=datetime.now)
     
-    def __init__(self, review_id, customer_id, review_id, rating, review_text, created):
+    def __init__(self, review_id, customer_id, activity_id, rating, review_text, created):
         self.review_id = review_id
         self.customer_id = customer_id
-        self.review_id = review_id
+        self.activity_id = activity_id
         self.rating = rating
         self.review_text = review_text
         self.created = created
@@ -42,7 +42,7 @@ class Review(db.Model):
         dto = {
             'review_id': self.review_id,
             'customer_id': self.customer_id,
-            'review_id': self.review_id,
+            'activity_id': self.activity_id,
             'rating': self.rating,
             'review_text': self.review_text,
             'created': self.created,
@@ -84,9 +84,9 @@ def find_by_review_id(review_id):
         {
             "code": 404,
             "data": {
-                "review_id": review_id
+                "activity_id": activity_id
             },
-            "message": "Review not found."
+            "message": "Activity not found."
         }
     ), 404
 
@@ -94,10 +94,10 @@ def find_by_review_id(review_id):
 @app.route("/review", methods=['POST'])
 def create_review():
     customer_id = request.json.get('customer_id', None)
-    review_id = request.json.get('review_id', None)
+    activity_id = request.json.get('activity_id', None)
     rating = request.json.get('rating', None)
     review_text = request.json.get('review_text', None)
-    review = Review(customer_id=customer_id, review_id=review_id, rating=rating, review_text=review_text)
+    review = Review(customer_id=customer_id, activity_id=activity_id, rating=rating, review_text=review_text)
     # review = Order(customer_id=customer_id, status='NEW')
     try:
         db.session.add(review)

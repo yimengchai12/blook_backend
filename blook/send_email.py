@@ -22,11 +22,11 @@ customer_URL = "http://localhost:5003/customer"
 @app.route("/send_email", methods=['POST'])
 def receiveEmailRequest():
     # Check if the order contains valid JSON
-    print("--email request received--")
+    print("\n-----Email request received-----")
     order = None
     if request.is_json:
         order = request.get_json()
-        print("received email request in json:  ", order)
+        print("***Successfully received email request in JSON format***")
         print("processing email")
         result = sendEmail(order)
         return jsonify(result), result["code"]
@@ -51,7 +51,7 @@ def sendEmail(order):
     customer_result = invoke_http(customer_URL + "/" + str(customer_ID), method='GET', json=None)
     customer_name = customer_result['data']['first_name'] + " " + customer_result['data']['last_name']
     customer_email = customer_result['data']['email']
-    print(f"\nBooking is for : {customer_name} with the email {customer_email}")
+    print(f"\nBooking with ID {booking_ID} is for {customer_name} with the email {customer_email}")
 
     booking_result = invoke_http(booking_URL + "/" + str(booking_ID), method='GET', json=None)
     total_pax = booking_result['data']['total_pax']
@@ -74,7 +74,7 @@ def sendEmail(order):
         sg = SendGridAPIClient("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")
         response = sg.send(message)
         code = response.status_code
-        print("Status code: ", code)
+        print("Email successfully send!\nStatus code: ", code)
         return {
             'code': code,
             'message': "success"

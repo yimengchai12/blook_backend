@@ -23,7 +23,7 @@
 <body>
     <div id="app" class="container">
         <h1>Bookstore</h1>
-        <h1 v-if="paid">paidddd</h1>
+        <h1 v-if="paid">Payment Successful</h1>
         <button @click="buy" type="button"
         class="my-1 btn btn-sm btn-danger"></button>
         <div class="row" v-show="!orderPlaced">
@@ -32,65 +32,9 @@
                 <button @click="findBook()" type="button"
                     class="my-1 btn btn-sm btn-primary">Search</button><br>
 
-                <table class="table table-striped" v-if="hasBooks">
-                    <!-- <table class="table table-striped"> -->
-                    <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>ISBN13</th>
-                            <th>Price</th>
-                            <th>Availability</th>
-                            <th>Place Order</th>
-                        </tr>
-                        <tr v-for="book in books">
-                            <td>{{ book.title }}</td>
-                            <td>{{ book.isbn13 }}</td>
-                            <td>{{ book.price }}</td>
-                            <td>{{ book.availability }}</td>
-                            <td><button @click="placeOrder(book)" type="button"
-                                    class="btn btn-primary">Place
-                                    Order</button>
-                            </td>
-
-                        </tr>
-                    </thead>
-                </table>
+                
                 <div class="text-danger" v-if="!hasBooks">{{ message }}</div>
-            </div> <!-- main & col -->
-            <div class="col-4">
-                <h2>Add a Book</h2>
-                <div class="form-group">
-                    <label for="title">Title</label>
-                    <input v-model="newTitle" type="text" class="form-control" id="title"
-                        placeholder="Enter title">
-                </div>
-                <div class="form-group">
-                    <label for="isbn13">ISBN13</label>
-                    <input v-model="newISBN13" type="number" class="form-control" id="isbn13"
-                        placeholder="Enter ISBN13">
-                </div>
-                <div class="form-group">
-                    <label for="price">Price</label>
-                    <input v-model="newPrice" type="number" class="form-control" id="price"
-                        placeholder="Enter Price">
-                </div>
-                <div class="form-group">
-                    <label for="availability">Availability</label>
-                    <input v-model="newAvailability" type="number" class="form-control"
-                        id="availability" placeholder="Enter Availability">
-                </div>
-                <button @click="addBook" class="btn btn-primary" v-on:submit.prevent="onSubmit">Add
-                    Book</button>
-                <div class="text-success" v-if="bookAdded">
-                    The book has been successfully placed! <br>
-                    <br>
-                </div>
-                <div class="text-danger" v-if="addBookError!=''">
-                    There is a problem adding this new book:<br>
-                    {{ addBookError}}
-                    <br>
-                </div>
-            </div> <!-- col -->
+            <!-- col -->
         </div> <!-- row -->
 
         <div id="place_order" v-show="orderPlaced">
@@ -152,6 +96,7 @@
                     orderPlaced: false,
                     orderSuccessful: false,
                     paid: false
+
                 };
             },
             methods: {
@@ -328,23 +273,22 @@
                             console.log(data)
                             window.location = data.url 
                             console.log(data)
-                            // fetch('http://localhost:5006/webhook', {
-                            //         method: "POST",
+                            fetch('http://localhost:5006/webhook', {
+                                    method: "POST",
                                     
-                            //     } )
-                            //     .then(response => response.json())
-                            //     .then(data => {
-                            //         console.log(data)
-                            //         code = data.code
-                            //         if (data.code == 200){
-                            //             console.log("Payment successful")
-                            //             this.paid=true
-                                        
-                            //         }
-                            //         else{
-                            //             console.log("Payment failed")
-                            //         }
-                            //     }) 
+                                } )
+                                .then(response => response.json())
+                                .then(data => {
+                                    console.log(data)
+                                    result = data.status
+                                    if (result == "Success"){
+                                        console.log("Payment successful");
+                                        this.paid=true;
+                                    }
+                                    else{
+                                        console.log("Payment failed")
+                                    }
+                                }) 
                         }) 
 
 

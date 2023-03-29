@@ -27,10 +27,10 @@ class Booking(db.Model):
     customer_id = db.Column(db.String(32), nullable=False)
     activity_id = db.Column(db.Integer, nullable=True)
     booking_datetime = db.Column(db.DateTime, nullable=False, default=datetime.now)
-    datetime = db.Column(db.DateTime, nullable=False)
+    datetime = db.Column(db.String(10), nullable=False)
     total_pax = db.Column(db.Integer, nullable=True)
     payment_amount = db.Column(db.Float(precision=2), nullable=False)
-    status = db.Column(db.String(3), nullable=False)
+    status = db.Column(db.String(3), nullable=False, default= 'NO')
     
     # def __init__(self, id, customer_id, activity_id, booking_datetime, datetime, total_pax, payment_amount, status):
     #     self.id = id
@@ -49,7 +49,7 @@ class Booking(db.Model):
             'customer_id': self.customer_id,
             'activity_id': self.activity_id,
             'booking_datetime': self.booking_datetime,
-            'datetime': self.booking_datetime,
+            'datetime': self.datetime,
             'total_pax': self.total_pax,
             'payment_amount': self.payment_amount,
             'status': self.status
@@ -104,7 +104,8 @@ def create_booking():
     activity_id = request.json.get('activity_id', None)
     payment_amount = request.json.get('payment_amount', None)
     total_pax = request.json.get('total_pax', None)
-    booking = Booking(customer_id=customer_id, activity_id=activity_id, payment_amount=payment_amount, total_pax=total_pax)
+    datetime = request.json.get('datetime', None)
+    booking = Booking(customer_id=customer_id, activity_id=activity_id, payment_amount=payment_amount, total_pax=total_pax, datetime=datetime)
 
     try:
         db.session.add(booking)

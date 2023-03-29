@@ -56,16 +56,16 @@ services:
   #######################################################
   # Paypal Record: The paypal Record microservice
   #######################################################
-  # payment:
-  #   build:
-  #     context: ./
-  #     dockerfile: payment.Dockerfile
-  #   image: payment:latest
-  #   restart: always
-  #   environment:
-  #     PYTHONUNBUFFERED: 1
-  #   ports: 
-  #     - "5006:5006"
+  payment:
+    build:
+      context: ./
+      dockerfile: payment.Dockerfile
+    image: payment:latest
+    restart: always
+    environment:
+      PYTHONUNBUFFERED: 1
+    ports: 
+      - "5006:5006"
 
   ####################################
   # RabbitMQ: The messaging broker   
@@ -99,18 +99,18 @@ services:
   ###################################
   # Error: The Error microservice
   ###################################
-  # error:
-  #   build:
-  #     context: ./
-  #     dockerfile: error.Dockerfile
-  #   image: error:esd
-  #   restart: always
-  #   depends_on:
-  #     - rabbitmq
-  #   environment:
-  #     rabbit_host: rabbitmq
-  #     rabbit_port: 5672
-  #     PYTHONUNBUFFERED: 1
+  error:
+    build:
+      context: ./
+      dockerfile: error.Dockerfile
+    image: error:esd
+    restart: always
+    depends_on:
+      - rabbitmq
+    environment:
+      rabbit_host: rabbitmq
+      rabbit_port: 5672
+      PYTHONUNBUFFERED: 1
 
   ###############################################
   # Place Booking: The Place Booking microservice
@@ -136,19 +136,27 @@ services:
       # shipping_record_URL: http://shipping_record:5002/shipping_record 
       PYTHONUNBUFFERED: 1
     ports:
-      - "5100:5100"
+      - "5111:5111"
 
   ##################################
   # Activity: The ACtivity microservice
   ##################################
-  # activity:
-  #   build:
-  #     context: ./
-  #     dockerfile: activity.Dockerfile
-  #   image: activity:latest
-  #   restart: always
-  #   environment:
-  #     dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/activity
-  #     PYTHONUNBUFFERED: 1
-  #   ports:
-  #     - "5001:5001"
+  activity:
+    build:
+      context: ./
+      dockerfile: activity.Dockerfile
+    image: activity:latest
+    restart: always
+    environment:
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/activity
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5001:5001"
+
+
+  stripe-cli:
+    image: stripe/stripe-cli
+    container_name: stripe-cli
+    command: "listen --api-key rk_test_51Miv0mDVT8kjXSeFW0WFB8fY9s54w4eSn7QJDYFgXiMCKdVH08eTQZfApoOwI261KyLrrhVIlq4hFUUaadX9npkf00ov0KzqBs --device-name DESKTOP-77ED857 --forward-to payment:5006/webhook"
+  
+  

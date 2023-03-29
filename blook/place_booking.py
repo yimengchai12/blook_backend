@@ -15,7 +15,7 @@ app = Flask(__name__)
 CORS(app)
 
 customer_URL = "http://customer:5003/customer"
-booking_URL = environ.get('booking_URL') or "http://booking:5001/booking" 
+booking_URL = environ.get('booking_URL') or "http://booking:5002/booking" 
 # shipping_record_URL = environ.get('shipping_record_URL') or "http://localhost:5002/shipping_record" 
 # booking_log_URL = "http://localhost:5006/activity_log"
 error_URL = "http://localhost:5008/error"
@@ -83,7 +83,7 @@ def processBookingOrder(booking):
                 "message": "Customer retrieval failure sent for error handling."
             }
     
-  
+    
 
     # Invoke the booking microservice
     print('\n-----Invoking booking microservice-----')
@@ -173,19 +173,19 @@ def processBookingOrder(booking):
     #     }
 
     # # 7. Return created order, shipping record
-    # return {
-    #     "code": 201,
-    #     "data": {
-    #         "order_result": order_result,
-    #         "shipping_result": shipping_result
-    #     }
-    # }
+    return {
+        "code": 201,
+        "data": {
+            "booking_result": booking_result,
+            "customer_result": customer_result
+        }
+    }
 
 
 # Execute this program if it is run as a main script (not by 'import')
 if __name__ == "__main__":
     print("This is flask " + os.path.basename(__file__) + " for placing an order...")
-    app.run(host="0.0.0.0", port=5100, debug=True)
+    app.run(host="0.0.0.0", port=5111, debug=True)
     # Notes for the parameters: 
     # - debug=True will reload the program automatically if a change is detected;
     #   -- it in fact starts two instances of the same flask program, and uses one of the instances to monitor the program changes;

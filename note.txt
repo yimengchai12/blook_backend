@@ -1,0 +1,8 @@
+for the creation of booking 
+{
+    "customer_id": "1",
+    "activity_id": "1",
+    "payment_amount": "100",
+    "total_pax" : "3",
+    "datetime" : "2022-12-31"
+}

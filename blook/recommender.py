@@ -21,7 +21,7 @@ review_URL = "http://127.0.0.1:5004/review"
 @app.route("/")
 def sendRecommendation():
     # Simple check of input format and data of the request are JSON
-    print("---Starting up Recommendation microservice---")
+    print("---Starting up Recommendation microservice---\n")
 
     result = processRecommendation()
     print('\n------------------------')
@@ -30,11 +30,11 @@ def sendRecommendation():
 
 
 def processRecommendation():
-    print('\n-----Activity microservice-----')
+    print('\n\n-----GET data from Activity microservice-----')
     activity_result = invoke_http(activity_URL, method='GET', json=None)
     activity_data_list = activity_result['data']['activities']
 
-    print('\n-----Reviews microservice-----')
+    print('\n\n-----GET data from Reviews microservice-----')
     review_result = invoke_http(review_URL, method='GET', json=None)
     review_data_list = review_result['data']['reviews']
 

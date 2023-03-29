@@ -7,7 +7,7 @@ import json
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import requests
-# from invokes import invoke_http
+from invokes import invoke_http
 
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
@@ -15,7 +15,9 @@ from sendgrid.helpers.mail import Mail
 app = Flask(__name__)
 CORS(app)
 
-booking_URL = "http://localhost:5004/booking"
+booking_URL = "http://localhost:5002/booking"
+activity_URL = "http://localhost:5001/activity"
+customer_URL = "http://localhost:5003/customer"
 
 @app.route("/send_email", methods=['POST'])
 def receiveEmailRequest():
@@ -25,6 +27,7 @@ def receiveEmailRequest():
     if request.is_json:
         order = request.get_json()
         print("received email request in json:  ", order)
+        print("processing email")
         result = sendEmail(order)
         return jsonify(result), result["code"]
     else:
@@ -38,23 +41,29 @@ def receiveEmailRequest():
 
 
 def sendEmail(order):
-    print("Processing the sending of email notification")
-    print(order)
-    print("tetstetstetstfwefewgfweg")
+    print("\n -------------Processing the sending of email notification-----------------\n")
+    print(f"\nBooking:   {order}\n")
     booking_ID = order['data']["id"]
     customer_ID = order['data']["customer_id"]
+    activity_ID = order['data']['activity_id']
     total_pax = order['data']["total_pax"]
 
-    customer_data = request.get_data(f'http://localhost:5003/customer/{customer_ID}')
-    print(customer_data)
-    customer_data = customer_data.json()
-    customer_name = customer_data["data"]["first_name"]
-    print("customer name: " + customer_name +"\n")
-    
-    activity_data = request.get_data(f'http://localhost:5001/activity/{booking_ID}')
-    activity_data = activity_data.json()
-    activity_name = activity_data["data"]["name"]
+    customer_result = invoke_http(customer_URL + "/" + str(customer_ID), method='GET', json=None)
+    customer_name = customer_result['data']['first_name'] + " " + customer_result['data']['last_name']
+    customer_email = customer_result['data']['email']
+    print(f"\nBooking is for : {customer_name} with the email {customer_email}")
 
+    booking_result = invoke_http(booking_URL + "/" + str(booking_ID), method='GET', json=None)
+    total_pax = booking_result['data']['total_pax']
+    payment_amt = booking_result['data']['payment_amount']
+
+    activity_result = invoke_http(activity_URL + "/" + str(activity_ID), method='GET', json=None)
+    activity_name = activity_result['data']['name']
+
+    print(f"{activity_name} for {total_pax} pax and ${payment_amt} has been successfully paid\n")
+    
+
+    print("------Preparing to send email--------")
     message = Mail(
     from_email='julianooi80@gmail.com',
     to_emails='mrjulianooii@gmail.com',

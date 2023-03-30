@@ -74,7 +74,7 @@ def create_checkout_session(price_id, quantity):
             # allow_promotion_codes = True,
             client_reference_id = str(price_id) + str(quantity),
             customer = 'cus_Ncbyb7VnzSWkCH',
-            discounts=[{'coupon': ''},],
+            # discounts=[{'coupon': ''},],
             cancel_url = 'http://127.0.0.1:5500/blook/index_vue.html',
         )
     except Exception as e:
@@ -84,61 +84,61 @@ def create_checkout_session(price_id, quantity):
     return {'url': checkout_session.url}
 
 
-@app.route("/webhook", methods=["POST"])
-def stripe_webhook():
-    payload = request.get_data(as_text=True)
-    sig_header = request.headers.get("Stripe-Signature")
-    endpoint_secret = 'whsec_9a44ebec0d6a46d09a2238b75e46a20583d3d28b8256c9809e69157e5ee9c373'
-    try:
-        event = stripe.Webhook.construct_event(
-            payload, sig_header, endpoint_secret
-        )
+# @app.route("/webhook", methods=["POST"])
+# def stripe_webhook():
+#     payload = request.get_data(as_text=True)
+#     sig_header = request.headers.get("Stripe-Signature")
+#     endpoint_secret = 'whsec_9a44ebec0d6a46d09a2238b75e46a20583d3d28b8256c9809e69157e5ee9c373'
+#     try:
+#         event = stripe.Webhook.construct_event(
+#             payload, sig_header, endpoint_secret
+#         )
 
-    except ValueError as e:
-        # Invalid payload
-        print('inalid payload')
-        return "Invalid payload", 400
-    except stripe.error.SignatureVerificationError as e:
-        # Invalid signature
-        print('invaid siganature')
-        return "Invalid signature", 400
+#     except ValueError as e:
+#         # Invalid payload
+#         print('inalid payload')
+#         return "Invalid payload", 400
+#     except stripe.error.SignatureVerificationError as e:
+#         # Invalid signature
+#         print('invaid siganature')
+#         return "Invalid signature", 400
 
-    # Handle the checkout.session.completed event
-    if event["type"] == "checkout.session.completed":
-        print("Payment was successful.")
-        print(event["data"]['object']["client_reference_id"])
-        print(event)
-        print('\n-----Invoking booking microservice-----')
-        booking_result = invoke_http(booking_URL, method='POST', json={
-    "customer_id": "1",
-    "activity_id": "1",
-    "payment_amount": "100",
-    "total_pax" : "3",
-    "datetime" : "2022-12-31"
-})
-        print('booking_result:', booking_result)
-
-
+#     # Handle the checkout.session.completed event
+#     if event["type"] == "checkout.session.completed":
+#         print("Payment was successful.")
+#         print(event["data"]['object']["client_reference_id"])
+#         print(event)
+#         print('\n-----Invoking booking microservice-----')
+#         booking_result = invoke_http(booking_URL, method='POST', json={
+#     "customer_id": "1",
+#     "activity_id": "1",
+#     "payment_amount": "100",
+#     "total_pax" : "3",
+#     "datetime" : "2022-12-31"
+# })
+#         print('booking_result:', booking_result)
 
 
 
 
 
 
-    if event["type"] == "charge.succeeded":
-        return jsonify(
-        {
-            "code": 200,
-            "message": "There are chargre."
-        }
-    ), 200
+
+
+#     if event["type"] == "charge.succeeded":
+#         return jsonify(
+#         {
+#             "code": 200,
+#             "message": "There are chargre."
+#         }
+#     ), 200
     
-    return jsonify(
-        {
-            "code": 200,
-            "message": "There are no books."
-        }
-    ), 200
+#     return jsonify(
+#         {
+#             "code": 200,
+#             "message": "There are no books."
+#         }
+#     ), 200
     
         # TODO: run some custom code here
 

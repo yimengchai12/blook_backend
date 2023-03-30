@@ -67,6 +67,17 @@ services:
     ports: 
       - "5006:5006"
 
+  webhook:
+    build:
+      context: ./
+      dockerfile: webhook.Dockerfile
+    image: webhook:latest
+    restart: always
+    environment:
+      PYTHONUNBUFFERED: 1
+    ports: 
+      - "5010:5010"
+
   ####################################
   # RabbitMQ: The messaging broker   
   ####################################
@@ -157,6 +168,6 @@ services:
   stripe-cli:
     image: stripe/stripe-cli
     container_name: stripe-cli
-    command: "listen --api-key rk_test_51Miv0mDVT8kjXSeFW0WFB8fY9s54w4eSn7QJDYFgXiMCKdVH08eTQZfApoOwI261KyLrrhVIlq4hFUUaadX9npkf00ov0KzqBs --device-name DESKTOP-77ED857 --forward-to payment:5006/webhook"
+    command: "listen --api-key rk_test_51Miv0mDVT8kjXSeFW0WFB8fY9s54w4eSn7QJDYFgXiMCKdVH08eTQZfApoOwI261KyLrrhVIlq4hFUUaadX9npkf00ov0KzqBs --device-name DESKTOP-77ED857 --forward-to webhook:5010/webhook"
   
   

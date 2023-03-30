@@ -64,13 +64,18 @@ def create_checkout_session(price_id, quantity):
                     # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
                     'price': price_id,
                     'quantity': quantity,
+
                 },
             ],
             mode='payment',
             # success_url=YOUR_DOMAIN + '/success.html',
             success_url = 'http://127.0.0.1:5500/blook/index_vue.html',
             # cancel_url=YOUR_DOMAIN + '/cancel.html',
-            cancel_url = 'http://127.0.0.1:5500/blook/index_vue.html'
+            # allow_promotion_codes = True,
+            client_reference_id = str(price_id) + str(quantity),
+            customer = 'cus_Ncbyb7VnzSWkCH',
+            discounts=[{'coupon': ''},],
+            cancel_url = 'http://127.0.0.1:5500/blook/index_vue.html',
         )
     except Exception as e:
         return str(e)
@@ -101,6 +106,8 @@ def stripe_webhook():
     # Handle the checkout.session.completed event
     if event["type"] == "checkout.session.completed":
         print("Payment was successful.")
+        print(event["data"]['object']["client_reference_id"])
+        print(event)
         print('\n-----Invoking booking microservice-----')
         booking_result = invoke_http(booking_URL, method='POST', json={
     "customer_id": "1",

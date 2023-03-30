@@ -24,17 +24,17 @@ services:
     ###################################
   # Review: The Review microservice
   ###################################
-  review:
-    build:
-      context: ./
-      dockerfile: review.Dockerfile
-    image: review:latest
-    restart: always
-    environment:
-      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/review
-      PYTHONUNBUFFERED: 1
-    ports:
-      - "5004:5004"
+  # review:
+  #   build:
+  #     context: ./
+  #     dockerfile: review.Dockerfile
+  #   image: review:latest
+  #   restart: always
+  #   environment:
+  #     dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/review
+  #     PYTHONUNBUFFERED: 1
+  #   ports:
+  #     - "5004:5004"
 
 
 
@@ -53,19 +53,32 @@ services:
       PYTHONUNBUFFERED: 1
     ports: 
       - "5003:5003"
+  #######################################################
+  # Paypal Record: The paypal Record microservice
+  #######################################################
+  payment:
+    build:
+      context: ./
+      dockerfile: payment.Dockerfile
+    image: payment:latest
+    restart: always
+    environment:
+      PYTHONUNBUFFERED: 1
+    ports: 
+      - "5006:5006"
 
   ####################################
   # RabbitMQ: The messaging broker   
   ####################################
-  # rabbitmq:
-  #   image: rabbitmq:3-management
-  #   hostname: esd-rabbit
-  #   restart: always
-  #   ports:
-  #     - "5672:5672"
-  #     - "15672:15672"
-  #   volumes: 
-  #     - rabbitmq_data:/var/lib/rabbitmq
+  rabbitmq:
+    image: rabbitmq:3-management
+    hostname: esd-rabbit
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes: 
+      - rabbitmq_data:/var/lib/rabbitmq
       
   #################################################
   # Activity Log: The Activity Log microservice
@@ -86,41 +99,44 @@ services:
   ###################################
   # Error: The Error microservice
   ###################################
-  # error:
-  #   build:
-  #     context: ./
-  #     dockerfile: error.Dockerfile
-  #   image: blook/error:esd
-  #   restart: always
-  #   depends_on:
-  #     - rabbitmq
-  #   environment:
-  #     rabbit_host: rabbitmq
-  #     rabbit_port: 5672
-  #     PYTHONUNBUFFERED: 1
+  error:
+    build:
+      context: ./
+      dockerfile: error.Dockerfile
+    image: error:esd
+    restart: always
+    depends_on:
+      - rabbitmq
+    environment:
+      rabbit_host: rabbitmq
+      rabbit_port: 5672
+      PYTHONUNBUFFERED: 1
 
   ###############################################
   # Place Booking: The Place Booking microservice
   ###############################################
-  # place_order:
-  #   build:
-  #     context: ./
-  #     dockerfile: place_booking.Dockerfile
-  #   image: blook/place_booking:esd
-  #   restart: always
-  #   depends_on:
-  #     - activity
-  #     # - booking_log
-  #     # - error
-  #     - rabbitmq
-  #   environment:
-  #     rabbit_host: rabbitmq
-  #     rabbit_port: 5672
-  #     order_URL: http://booking:8001/booking
-  #     # shipping_record_URL: http://shipping_record:5002/shipping_record 
-  #     PYTHONUNBUFFERED: 1
-  #   ports:
-  #     - "5100:5100"
+  place_booking:
+    build:
+      context: ./
+      dockerfile: place_booking.Dockerfile
+    image: place_booking:latest
+    restart: always
+    depends_on:
+      # - activity
+      - customer
+      - booking
+      # - booking_log
+      # - error
+      # - rabbitmq
+    environment:
+      rabbit_host: rabbitmq
+      rabbit_port: 5672
+      booking_URL: http://booking:5002/booking
+      customer_URL: http://customer:5003/customer
+      # shipping_record_URL: http://shipping_record:5002/shipping_record 
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5111:5111"
 
   ##################################
   # Activity: The ACtivity microservice
@@ -150,3 +166,11 @@ services:
       PYTHONUNBUFFERED: 1
     ports:
       - "5005:5005"
+
+
+  stripe-cli:
+    image: stripe/stripe-cli
+    container_name: stripe-cli
+    command: "listen --api-key rk_test_51Miv0mDVT8kjXSeFW0WFB8fY9s54w4eSn7QJDYFgXiMCKdVH08eTQZfApoOwI261KyLrrhVIlq4hFUUaadX9npkf00ov0KzqBs --device-name DESKTOP-77ED857 --forward-to payment:5006/webhook"
+  
+  

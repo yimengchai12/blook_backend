@@ -27,20 +27,20 @@ class Booking(db.Model):
     customer_id = db.Column(db.String(32), nullable=False)
     activity_id = db.Column(db.Integer, nullable=True)
     booking_datetime = db.Column(db.DateTime, nullable=False, default=datetime.now)
-    datetime = db.Column(db.DateTime, nullable=False)
+    datetime = db.Column(db.String(10), nullable=False)
     total_pax = db.Column(db.Integer, nullable=True)
     payment_amount = db.Column(db.Float(precision=2), nullable=False)
-    status = db.Column(db.String(3), nullable=False)
+    status = db.Column(db.String(3), nullable=False, default= 'NO')
     
-    def __init__(self, id, customer_id, activity_id, booking_datetime, datetime, total_pax, payment_amount, status):
-        self.id = id
-        self.customer_id = customer_id
-        self.activity_id = activity_id
-        self.booking_datetime = booking_datetime
-        self.datetime = datetime
-        self.total_pax = total_pax
-        self.payment_amount = payment_amount
-        self.status = status
+    # def __init__(self, id, customer_id, activity_id, booking_datetime, datetime, total_pax, payment_amount, status):
+    #     self.id = id
+    #     self.customer_id = customer_id
+    #     self.activity_id = activity_id
+    #     self.booking_datetime = booking_datetime
+    #     self.datetime = datetime
+    #     self.total_pax = total_pax
+    #     self.payment_amount = payment_amount
+    #     self.status = status
 
 
     def json(self):
@@ -49,7 +49,7 @@ class Booking(db.Model):
             'customer_id': self.customer_id,
             'activity_id': self.activity_id,
             'booking_datetime': self.booking_datetime,
-            'datetime': self.booking_datetime,
+            'datetime': self.datetime,
             'total_pax': self.total_pax,
             'payment_amount': self.payment_amount,
             'status': self.status
@@ -78,7 +78,7 @@ def get_all():
 
 
 @app.route("/booking/<string:booking_id>")
-def find_by_order_id(booking_id):
+def find_by_booking_id(booking_id):
     booking = Booking.query.filter_by(id=booking_id).first()
     if booking:
         return jsonify(
@@ -99,12 +99,13 @@ def find_by_order_id(booking_id):
 
 
 @app.route("/booking", methods=['POST'])
-def create_order():
+def create_booking():
     customer_id = request.json.get('customer_id', None)
     activity_id = request.json.get('activity_id', None)
     payment_amount = request.json.get('payment_amount', None)
     total_pax = request.json.get('total_pax', None)
-    booking = Booking(customer_id=customer_id, activity_id=activity_id, payment_amount=payment_amount, total_pax=total_pax)
+    datetime = request.json.get('datetime', None)
+    booking = Booking(customer_id=customer_id, activity_id=activity_id, payment_amount=payment_amount, total_pax=total_pax, datetime=datetime)
 
     try:
         db.session.add(booking)

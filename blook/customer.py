@@ -4,7 +4,7 @@ from os import environ
 from flask_cors import CORS
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/customer'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
@@ -48,7 +48,7 @@ def get_all():
             {
                 "code": 200,
                 "data": {
-                    "activities": [customer.json() for customer in activitylist]
+                    "customers": [customer.json() for customer in activitylist]
                 }
             }
         )

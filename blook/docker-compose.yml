@@ -164,6 +164,20 @@ services:
     ports:
       - "5001:5001"
 
+  ##################################
+  # Send Email: The email notification microservice
+  ##################################
+  send_email:
+    build:
+      context: ./
+      dockerfile: send_email.Dockerfile
+    image: send_email:latest
+    restart: always
+    environment:
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5005:5005"
+
 
   stripe-cli:
     image: stripe/stripe-cli

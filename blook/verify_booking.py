@@ -30,10 +30,10 @@ def receiveVerification():
         print("\n---Verifiying booking success---\n")
         print(f"Booking Status updated: {result}\n")
 
-        if result['code'] in range(200,300):
-            print("---Invoking email micoservice---\n")
-            email_result = sendVerifyBookingEmail(order)
-            print("\n---email success---\n")
+        # if result['code'] in range(200,300):
+        #     print("---Invoking email micoservice---\n")
+        #     email_result = sendVerifyBookingEmail(order)
+        #     print("\n---email success---\n")
 
         return jsonify(result), result["code"]
     
@@ -64,11 +64,11 @@ def sendVerification(order):
             "data": [changed]
         }
 
-def sendVerifyBookingEmail(order):
-    print("\n ----------Preparing to send req to email microserivce------------\n")
-    print(f"Order:    {order}")
-    booking_ID = order["id"]
-    email_result = invoke_http(send_email_URL, method='POST', json=order)
+# def sendVerifyBookingEmail(order):
+#     print("\n ----------Preparing to send req to email microserivce------------\n")
+#     print(f"Order:    {order}")
+#     booking_ID = order["id"]
+#     email_result = invoke_http(send_email_URL, method='POST', json=order)
 
 
 

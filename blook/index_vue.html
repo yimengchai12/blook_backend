@@ -26,6 +26,8 @@
         <h1 v-if="paid">paidddd</h1>
         <button @click="buy" type="button"
         class="my-1 btn btn-sm btn-danger"></button>
+        <button @click="get_booking_details" type="button"
+        class="my-1 btn btn-sm btn-secondary"></button>
         <div class="row" v-show="!orderPlaced">
             <div id="main" class="col-8">
                 Search by ISBN: <input v-model="isbn13" placeholder="ISBN number">
@@ -321,7 +323,18 @@
                 },
                 buy(){
                     fetch('http://localhost:5006/create-checkout-session/price_1Mqf26DVT8kjXSeFSdNWI8Tb/1', {
-                            method: "POST",          
+                            method: "POST",
+                            headers: {
+                                "Content-type": "application/json"
+                            },
+                            body: JSON.stringify(
+                                {
+    "customer_id": "1",
+    "activity_id": "1",
+    "payment_amount": "100",
+    "total_pax" : "3",
+    "datetime" : "2022-12-31"
+})
                         } )
                         .then(response => response.json())
                         .then(data => {
@@ -348,6 +361,23 @@
                         }) 
 
 
+                },
+
+                get_booking_details(){
+                    let jsonData = JSON.stringify({
+                        "customer_id": 1, 
+                        "activity_id": 1
+                    })
+                    fetch('http://localhost:5012/get_booking_details/1/1', {
+                            method: "GET"
+                           
+
+                        } )
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data)
+                            
+                        })
                 }
             },
             created () {

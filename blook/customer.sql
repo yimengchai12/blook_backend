@@ -9,12 +9,13 @@ create table customer (
     gender VARCHAR(7) NOT NULL,
 	address VARCHAR(50) NOT NULL,
     billing_address VARCHAR(50),
-	phone VARCHAR(50) NOT NULL
+	phone VARCHAR(50) NOT NULL,
+	point INT NULL
 );
 
 
-insert into customer (first_name, last_name, email, gender, address, billing_address, phone) values ('Penrod', 'Bony', 'pbony0@dmoz.org', 'Male', '93 Lawn Drive', null, '+86 (166) 208-3670');
-insert into customer (first_name, last_name, email, gender, address, billing_address, phone) values ('Darrelle', 'Rimmer', 'drimmer1@last.fm', 'Female', '172 Pennsylvania Center', null, '+86 (917) 459-8532');
+insert into customer (first_name, last_name, email, gender, address, billing_address, phone, point) values ('Penrod', 'Bony', 'pbony0@dmoz.org', 'Male', '93 Lawn Drive', null, '+86 (166) 208-3670', 100);
+insert into customer (first_name, last_name, email, gender, address, billing_address, phone, point) values ('Darrelle', 'Rimmer', 'drimmer1@last.fm', 'Female', '172 Pennsylvania Center', null, '+86 (917) 459-8532', 200);
 insert into customer (first_name, last_name, email, gender, address, billing_address, phone) values ('Mitch', 'Redhead', 'mredhead2@github.com', 'Male', '690 Linden Avenue', null, '+351 (847) 794-9904');
 insert into customer (first_name, last_name, email, gender, address, billing_address, phone) values ('Shani', 'Hurdedge', 'shurdedge3@github.com', 'Female', '212 6th Circle', '351 Mcbride Street', '+1 (318) 919-8632');
 insert into customer (first_name, last_name, email, gender, address, billing_address, phone) values ('Maggee', 'Lamberto', 'mlamberto4@ted.com', 'Female', '93620 Rockefeller Place', null, '+55 (261) 375-3977');

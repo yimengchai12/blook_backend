@@ -149,6 +149,29 @@ services:
     ports:
       - "5111:5111"
 
+
+  get_booking_details:
+    build:
+      context: ./
+      dockerfile: get_booking_details.Dockerfile
+    image: get_booking_details:latest
+    restart: always
+    depends_on:
+      # - activity
+      - customer
+      - activity
+      - payment
+      # - booking_log
+      # - error
+      # - rabbitmq
+    environment:
+      activity_URL: http://activity:5001/activity
+      customer_URL: http://customer:5003/customer
+      # shipping_record_URL: http://shipping_record:5002/shipping_record 
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5012:5012"
+
   ##################################
   # Activity: The ACtivity microservice
   ##################################
@@ -176,7 +199,7 @@ services:
     environment:
       PYTHONUNBUFFERED: 1
     ports:
-      - "5005:5005"
+      - "5020:5020"
 
 
   stripe-cli:

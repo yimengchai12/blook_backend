@@ -32,6 +32,7 @@ class Booking(db.Model):
     payment_amount = db.Column(db.Float(precision=2), nullable=False)
     status = db.Column(db.String(3), nullable=False, default= 'NO')
     
+    
     # def __init__(self, id, customer_id, activity_id, booking_datetime, datetime, total_pax, payment_amount, status):
     #     self.id = id
     #     self.customer_id = customer_id
@@ -109,6 +110,10 @@ def create_booking():
 
     try:
         db.session.add(booking)
+        db.session.flush()
+        booking.id
+        print("new id is" + str(booking.id))
+
         db.session.commit()
     except Exception as e:
         return jsonify(

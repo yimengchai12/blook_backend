@@ -26,6 +26,7 @@ def receiveEmailRequest():
     order = None
     if request.is_json:
         order = request.get_json()
+        print(order)
         print("***Successfully received email request in JSON format***")
         print("processing email")
         result = sendEmail(order)
@@ -43,15 +44,19 @@ def receiveEmailRequest():
 def sendEmail(order):
     print("\n -------------Processing the sending of email notification-----------------\n")
     print(f"\nBooking:   {order}\n")
-    booking_ID = order['data']["id"]
-    customer_ID = order['data']["customer_id"]
-    activity_ID = order['data']['activity_id']
-    total_pax = order['data']["total_pax"]
+    booking_ID = order["id"]
+    customer_ID = order["customer_id"]
+    activity_ID = order['activity_id']
+    total_pax = order["total_pax"]
 
     customer_result = invoke_http(customer_URL + "/" + str(customer_ID), method='GET', json=None)
+    customer_result=json.dumps(customer_result)
+    # print("check" + customer_result)
+    print("check 2" + customer_result['data']['first_name'])
     customer_name = customer_result['data']['first_name'] + " " + customer_result['data']['last_name']
     customer_email = customer_result['data']['email']
     print(f"\nBooking with ID {booking_ID} is for {customer_name} with the email {customer_email}")
+  
 
     booking_result = invoke_http(booking_URL + "/" + str(booking_ID), method='GET', json=None)
     total_pax = booking_result['data']['total_pax']
@@ -66,9 +71,9 @@ def sendEmail(order):
     print("------Preparing to send email--------")
     message = Mail(
     from_email='julianooi80@gmail.com',
-    to_emails='mrjulianooii@gmail.com',
+    to_emails='yimengchai12@gmail.com',
     subject='Your booking has been confirmed',
-    html_content=f'<h2>Dear {customer_name}</h2>, <br> <h3>Your booking for <strong>{activity_name}</strong> for a total of {total_pax} pax has been confirmed. Your booking ID is <strong>{booking_ID}</strong>.<br>We hope you enjoy your time!</h3>')
+    html_content=f'<h2>Dear {customer_name}</h2>, <br> <h3>Your booking for <strong>{activity_name}</strong> for a total of {total_pax} pax has been confirmed. Your booking ID is <strong>1</strong>.<br>We hope you enjoy your time!</h3>')
 
     try:
         sg = SendGridAPIClient("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")
@@ -90,7 +95,7 @@ def sendEmail(order):
 if __name__ == "__main__":
     print("This is flask " + os.path.basename(__file__) +
           ": send email microservice ...")
-    app.run(host='0.0.0.0', port=5005, debug=True)
+    app.run(host='0.0.0.0', port=5020, debug=True)
     
 
 

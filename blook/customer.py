@@ -23,8 +23,9 @@ class Customer(db.Model):
     address = db.Column(db.String(50), nullable=False)
     billing_address = db.Column(db.String(50), nullable=False)
     phone = db.Column(db.String(50), nullable=False)
+    point = db.Column(db.Integer, nullable=True)
 
-    def __init__(self, id, first_name, last_name, email, gender, address, billing_address, phone):
+    def __init__(self, id, first_name, last_name, email, gender, address, billing_address, phone, point):
         self.id = id
         self.first_name = first_name
         self.last_name = last_name
@@ -33,11 +34,12 @@ class Customer(db.Model):
         self.address = address
         self.billing_address = billing_address
         self.phone = phone
+        self.point = point
         
         
 
     def json(self):
-        return {"id": self.id, "first_name": self.first_name, "last_name": self.last_name, "email": self.email, "gender" :self.gender, "address": self.address, "billing_address": self.billing_address, "phone": self.phone}
+        return {"id": self.id, "first_name": self.first_name, "last_name": self.last_name, "email": self.email, "gender" :self.gender, "address": self.address, "billing_address": self.billing_address, "phone": self.phone, "point": self.point}
 
 
 @app.route("/customer")
@@ -121,12 +123,8 @@ def update_customer(id):
     customer = Customer.query.filter_by(id=id).first()
     if customer:
         data = request.get_json()
-        if data['title']:
-            customer.title = data['title']
-        if data['price']:
-            customer.price = data['price']
-        if data['availability']:
-            customer.availability = data['availability'] 
+        if data['payment_amount']:
+            customer.point = int(data['payment_amount']) + customer.point
         db.session.commit()
         return jsonify(
             {

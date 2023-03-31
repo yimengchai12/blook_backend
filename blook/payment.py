@@ -16,12 +16,12 @@ from os import environ
 
 import requests
 from invokes import invoke_http
-
+import json
 
 
 import stripe
 from invokes import invoke_http
-booking_URL =  "http://booking:5002/booking" 
+# booking_URL =  "http://booking:5002/booking" 
 
 
 # This is your test secret API key.
@@ -37,7 +37,7 @@ YOUR_DOMAIN = 'http://localhost:5006'#idk what localhost to use
 # app.config['STRIPE_SECRET_KEY']="sk_test_51Miv0mDVT8kjXSeFhyISeAE8DvBk8A2i1naRDbWDYNEblx1IiBTkbG5fXBG38daqRngJSiq1cpx25hSkZ1OPNrTN00oqJCRNJF"
 
 CORS(app)  
-@app.route('/<string:product_id>', methods=['GET'])
+@app.route('/payment/<string:product_id>', methods=['GET'])
 def get_product_id(product_id):
     # Replace "PRODUCT_ID" with the ID of the product you want to retrieve the default price for
     # Retrieve the product object using its ID
@@ -55,9 +55,22 @@ def get_product_id(product_id):
             }
         )
 
+# from get_booking_details result, pass result.data.product_result.price_id, quantity from front end. pass a json from front end to receive request on backend.
 @app.route('/create-checkout-session/<string:price_id>/<string:quantity>', methods=['POST'])
 def create_checkout_session(price_id, quantity):
     try:
+        checkout_details = request.get_json()
+        print("\nReceived checkout details in JSON:", checkout_details)
+        customer_id = checkout_details["customer_id"]
+        print("\nCustomer ID:", customer_id)
+        activity_id = checkout_details["activity_id"]
+        print("\nActivity ID:", activity_id)
+        total_pax = checkout_details["total_pax"]
+        print("\nTotal Pax:", quantity)
+        datetime = checkout_details["datetime"]
+        print("\nDatetime:", datetime)
+        payment_amount = checkout_details["payment_amount"] #need multiply by quantity on front end
+        print("\nPayment Amount:", payment_amount)
         checkout_session = stripe.checkout.Session.create(
             line_items=[
                 {
@@ -72,8 +85,7 @@ def create_checkout_session(price_id, quantity):
             success_url = 'http://127.0.0.1:5500/blook/index_vue.html',
             # cancel_url=YOUR_DOMAIN + '/cancel.html',
             # allow_promotion_codes = True,
-            client_reference_id = str(price_id) + str(quantity),
-            customer = 'cus_Ncbyb7VnzSWkCH',
+            client_reference_id = json.dumps(checkout_details),
             # discounts=[{'coupon': ''},],
             cancel_url = 'http://127.0.0.1:5500/blook/index_vue.html',
         )

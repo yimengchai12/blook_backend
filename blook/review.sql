@@ -10,6 +10,12 @@ create table review (
     created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE pendingReview (
+    num INT PRIMARY KEY AUTO_INCREMENT,
+    customer_ID INT,
+    activity_id INT
+);
+
 -- creating review table END --
 
 -- inserting mock reviews START --
@@ -82,3 +88,15 @@ VALUES
 (24, 7, 3, 'The zoo was decent. Some of the animals seemed a bit bored or restless, but overall it was a decent way to spend the day. Not the best zoo weve been to, but still worth a visit'),
 (40, 2, 4, 'The hot air balloon ride was an unforgettable experience! The views were breathtaking and the pilot was very skilled and knowledgeable. Highly recommend'),
 (17, 11, 4, 'The amusement park was a lot of fun! There were plenty of rides and attractions to keep us entertained, and the staff were friendly and helpful. Highly recommend');
+
+
+
+
+INSERT INTO pendingReview (customer_ID, activity_id)
+VALUES 
+  (1, 100),
+  (1, 1),
+  (1, 15),
+  (2, 24),
+  (2, 25),
+  (6, 6)

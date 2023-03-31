@@ -30,8 +30,7 @@ class Review(db.Model):
     review_text = db.Column(db.String(255), nullable=False)
     created = db.Column(db.DateTime, nullable=False, default=datetime.now)
     
-    def __init__(self, review_id, customer_id, activity_id, rating, review_text, created):
-        self.review_id = review_id
+    def __init__(self, customer_id, activity_id, rating, review_text, created):
         self.customer_id = customer_id
         self.activity_id = activity_id
         self.rating = rating
@@ -46,6 +45,25 @@ class Review(db.Model):
             'rating': self.rating,
             'review_text': self.review_text,
             'created': self.created,
+        }
+        return dto
+
+class pendingReview(db.Model):
+    __tablename__ = 'pendingReview'
+
+    num = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    customer_id = db.Column(db.Integer)
+    activity_id = db.Column(db.Integer)
+    
+    def __init__(self, customer_id, activity_id):
+        self.customer_id = customer_id
+        self.activity_id = activity_id
+
+    def json(self):
+        dto = {
+            'num': self.num,
+            'customer_id': self.customer_id,
+            'activity_id': self.activity_id,
         }
         return dto
 
@@ -160,6 +178,58 @@ def update_review(review_id):
             }
         ), 500
 
+
+# GET all pending reviews for a customer
+@app.route("/pendingReview/<string:customer_id>", methods=['GET'])
+def find_pending_reviews(customer_id):
+    reviewlist = pendingReview.query.filter_by(customer_id=customer_id).all()
+    if reviewlist:
+        return jsonify(
+            {
+                "code": 200,
+                "data": [review.json() for review in reviewlist]
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "data": {
+                "customer_id": customer_id
+            },
+            "message": "No reviews found."
+        }
+    ), 404
+
+
+# Add new row when booking has been verified (new review pending by customer)
+@app.route("/pendingReview", methods=['POST'])
+def add_pending_review():
+    print("test0")
+    activity_id = request.json.get('activity_id')
+    print("test1")
+    customer_id = request.json.get('customer_id')
+    print("test2")
+    new_review = pendingReview(activity_id=activity_id, customer_id=customer_id)
+    try:
+        db.session.add(new_review)
+        db.session.commit()
+    except Exception as e:
+        return jsonify(
+            {
+                "code": 500,
+                "message": "An error occurred while adding new pending review. " + str(e)
+            }
+        ), 500
+    
+    print(json.dumps(new_review.json(), default=str)) # convert a JSON object to a string and print
+    print()
+
+    return jsonify(
+        {
+            "code": 201,
+            "data": new_review.json()
+        }
+    ), 201
 
 if __name__ == '__main__':
     print("This is flask for " + os.path.basename(__file__) + ": manage orders ...")

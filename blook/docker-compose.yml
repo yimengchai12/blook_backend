@@ -73,7 +73,11 @@ services:
       dockerfile: webhook.Dockerfile
     image: webhook:latest
     restart: always
+    depends_on:
+      - rabbitmq
     environment:
+      rabbit_host: rabbitmq
+      rabbit_port: 5672
       PYTHONUNBUFFERED: 1
     ports: 
       - "5010:5010"
@@ -196,7 +200,11 @@ services:
       dockerfile: send_email.Dockerfile
     image: send_email:latest
     restart: always
+    depends_on:
+      - rabbitmq
     environment:
+      rabbit_host: rabbitmq
+      rabbit_port: 5672
       PYTHONUNBUFFERED: 1
     ports:
       - "5020:5020"

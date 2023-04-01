@@ -308,8 +308,6 @@ services:
 
     
   
-
-
 networks:
   kong-net:
     external:

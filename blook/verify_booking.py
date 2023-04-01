@@ -12,9 +12,9 @@ from sendgrid.helpers.mail import Mail
 app = Flask(__name__)
 CORS(app)
 
-booking_URL = "http://localhost:5002/booking"
-send_email_URL = "http://127.0.0.1:5020/send_email"
-pendingReview_URL = "http://localhost:5004/pendingReview"
+booking_URL = "http://booking:5002/booking"
+send_email_URL = "http://send_email:5020/send_email"
+pendingReview_URL = "http://review:5004/pendingReview"
 
 @app.route("/verify_booking", methods=['POST'])
 def receiveVerification():

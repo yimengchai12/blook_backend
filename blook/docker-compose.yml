@@ -24,17 +24,17 @@ services:
     ###################################
   # Review: The Review microservice
   ###################################
-  # review:
-  #   build:
-  #     context: ./
-  #     dockerfile: review.Dockerfile
-  #   image: review:latest
-  #   restart: always
-  #   environment:
-  #     dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/review
-  #     PYTHONUNBUFFERED: 1
-  #   ports:
-  #     - "5004:5004"
+  review:
+    build:
+      context: ./
+      dockerfile: review.Dockerfile
+    image: review:latest
+    restart: always
+    environment:
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/review
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5004:5004"
 
 
 

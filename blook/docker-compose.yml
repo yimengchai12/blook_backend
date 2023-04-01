@@ -205,6 +205,8 @@ services:
   stripe-cli:
     image: stripe/stripe-cli
     container_name: stripe-cli
-    command: "listen --api-key rk_test_51Miv0mDVT8kjXSeFW0WFB8fY9s54w4eSn7QJDYFgXiMCKdVH08eTQZfApoOwI261KyLrrhVIlq4hFUUaadX9npkf00ov0KzqBs --forward-to webhook:5010/webhook"
+    command: "listen --api-key $${STRIPE_API_KEY} --forward-to webhook:5010/webhook"
+    env_file:
+      - stripe_cli.env
   
   

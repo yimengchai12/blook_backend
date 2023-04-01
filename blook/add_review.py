@@ -6,14 +6,12 @@ from flask_cors import CORS
 import requests
 from invokes import invoke_http
 
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
 
 app = Flask(__name__)
 CORS(app)
 
-customer_URL = "http://localhost:5003/customer/"
-review_URL = "http://localhost:5004/" # add to the back "review" or "pendingReview"
+customer_URL = "http://customer:5003/customer/"
+review_URL = "http://review:5004/" # add to the back "review" or "pendingReview"
 
 @app.route("/add_review", methods=['POST'])
 def receiveVerification():
@@ -62,7 +60,7 @@ def addReview(order):
 if __name__ == "__main__":
     print("This is flask " + os.path.basename(__file__) +
           ": add review microservice ...")
-    app.run(host='0.0.0.0', port=5100, debug=True)
+    app.run(host='0.0.0.0', port=5144, debug=True)
     
 
 

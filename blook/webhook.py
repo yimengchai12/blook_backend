@@ -11,6 +11,8 @@ from os import environ
 import requests
 from invokes import invoke_http
 import json
+import amqp_setup
+import pika
 
 
 import stripe
@@ -18,7 +20,7 @@ from invokes import invoke_http
 booking_URL = "http://booking:5002/booking"
 customer_URL = "http://customer:5003/customer"
 send_email_URL = "http://send_email:5020/send_email"
-
+coupon_URL = "http://coupon:5013/coupon" 
 
 # This is your test secret API key.
 stripe.api_key = "sk_test_51Miv0mDVT8kjXSeFhyISeAE8DvBk8A2i1naRDbWDYNEblx1IiBTkbG5fXBG38daqRngJSiq1cpx25hSkZ1OPNrTN00oqJCRNJF"
@@ -77,26 +79,85 @@ def stripe_webhook():
         print(event["data"]['object']["client_reference_id"])
         booking = json.loads(event["data"]['object']["client_reference_id"])
         print(event)
+        if event["data"]['object']["amount_subtotal"] != event["data"]['object']["amount_total"]: 
+            booking["payment_amount"] = str(float(event["data"]['object']["amount_total"])/100)
+
         print('\n-----Invoking booking microservice-----')
         booking_result = invoke_http(booking_URL, method='POST', json=booking)
         print('booking_result:', booking_result)
         code = booking_result["code"]
         message = json.dumps(booking_result)
+        print("check"+ message)
 
-        print('\n-----Invoking customer microservice-----')
-        customer_id = booking["customer_id"]
-        customer_result = invoke_http(
-            customer_URL + "/" + customer_id, method='PUT', json=booking_result['data'])
-        print('customer_result:', customer_result)
-        code = customer_result["code"]
-        message = json.dumps(customer_result)
+        amqp_setup.check_setup()
+        if code not in range(200, 300):
+        # Inform the error microservice
+        #print('\n\n-----Invoking error microservice as order fails-----')
+            print('\n\n-----Publishing the (booking error) message with routing_key=order.error-----')
 
-        print('\n-----Invoking email microservice-----')
-        # customer_id = booking["customer_id"]
-        email_result = invoke_http(send_email_URL, method='POST', json=booking_result['data'])
-        print('email_result:', email_result)
-        code = email_result["code"]
-        message = json.dumps(email_result)
+        # invoke_http(error_URL, method="POST", json=order_result)
+            amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="order.error", 
+            body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
+        # make message persistent within the matching queues until it is received by some receiver 
+        # (the matching queues have to exist and be durable and bound to the exchange)
+
+        # - reply from the invocation is not used;
+        # continue even if this invocation fails        
+            print("\nBooking status ({:d}) published to the RabbitMQ Exchange:".format(
+            code), booking_result)
+
+        # 7. Return error
+            return {
+                "code": 500,
+                "data": {"booking_result": booking_result},
+                "message": "Order creation failure sent for error handling."
+            }
+
+    # Notice that we are publishing to "Activity Log" only when there is no error in order creation.
+    # In http version, we first invoked "Activity Log" and then checked for error.
+    # Since the "Activity Log" binds to the queue using '#' => any routing_key would be matched 
+    # and a message sent to “Error” queue can be received by “Activity Log” too.
+
+        else:
+            # 4. Record new order
+            # record the activity log anyway
+            #print('\n\n-----Invoking activity_log microservice-----')
+            print('\n\n-----Publishing the (order info) message with routing_key=order.info-----')        
+
+            # invoke_http(activity_log_URL, method="POST", json=order_result)            
+            amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="order.info", 
+                body=message)
+        
+            print("\nOrder published to RabbitMQ Exchange.\n")
+
+
+
+            
+
+            print('\n-----Invoking customer microservice-----')
+            customer_id = booking["customer_id"]
+            customer_result = invoke_http(
+                customer_URL + "/" + customer_id, method='PUT', json=booking_result['data'])
+            print('customer_result:', customer_result)
+            code = customer_result["code"]
+            message = json.dumps(customer_result)
+
+            if "coupon_id" in booking:
+                print('\n-----Invoking coupon microservice-----')
+                coupon_id = booking["coupon_id"]
+                coupon_result = invoke_http(
+                    coupon_URL + "/" + customer_id + "/" + coupon_id, method='DELETE')
+                print('coupon_result:', coupon_result)
+                code = coupon_result["code"]
+                message = json.dumps(coupon_result)
+
+
+            print('\n-----Invoking email microservice-----')
+    
+            # email_result = invoke_http(send_email_URL, method='POST', json=booking_result['data'])
+            # print('email_result:', email_result)
+            # code = email_result["code"]
+            # message = json.dumps(email_result)
 
     if event["type"] == "charge.succeeded":
         return jsonify(

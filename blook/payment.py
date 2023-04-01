@@ -96,6 +96,51 @@ def create_checkout_session(price_id, quantity):
     return {'url': checkout_session.url}
 
 
+@app.route('/create-checkout-session/<string:price_id>/<string:quantity>/<string:coupon_id>', methods=['POST'])
+def create_checkout_session_with_Coupon(price_id, quantity, coupon_id):
+    try:
+        checkout_details = request.get_json()
+        print("\nReceived checkout details in JSON:", checkout_details)
+        customer_id = checkout_details["customer_id"]
+        print("\nCustomer ID:", customer_id)
+        activity_id = checkout_details["activity_id"]
+        print("\nActivity ID:", activity_id)
+        total_pax = checkout_details["total_pax"]
+        print("\nTotal Pax:", quantity)
+        datetime = checkout_details["datetime"]
+        print("\nDatetime:", datetime)
+        payment_amount = checkout_details["payment_amount"] #need multiply by quantity on front end
+        print("\nPayment Amount:", payment_amount)
+        checkout_session = stripe.checkout.Session.create(
+            line_items=[
+                {
+                    # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+                    'price': price_id,
+                    'quantity': quantity,
+
+                },
+            ],
+            mode='payment',
+            # success_url=YOUR_DOMAIN + '/success.html',
+            success_url = 'http://127.0.0.1:5500/blook/index_vue.html',
+            # cancel_url=YOUR_DOMAIN + '/cancel.html',
+            # allow_promotion_codes = True,
+            client_reference_id = json.dumps(checkout_details),
+            discounts=[{'coupon': coupon_id},],
+            cancel_url = 'http://127.0.0.1:5500/blook/index_vue.html',
+        )
+    except Exception as e:
+        return str(e)
+
+    # return redirect(checkout_session.url, code=303)
+    return {'url': checkout_session.url}
+
+
+
+
+
+
+
 # @app.route("/webhook", methods=["POST"])
 # def stripe_webhook():
 #     payload = request.get_data(as_text=True)

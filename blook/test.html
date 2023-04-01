@@ -26,6 +26,8 @@
         <h1 v-if="paid">Payment Successful</h1>
         <button @click="buy" type="button"
         class="my-1 btn btn-sm btn-danger"></button>
+        <button @click="paywtihcoupon" type="button"
+        class="my-1 btn btn-sm btn-primary">paywithcoupon</button>
         <div class="row" v-show="!orderPlaced">
             <div id="main" class="col-8">
                 Search by ISBN: <input v-model="isbn13" placeholder="ISBN number">

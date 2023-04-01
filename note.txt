@@ -31,6 +31,15 @@ result from get_booking_details:
 
 
 
+get_coupons result is list of coupons lower than the customer's point
+    coupon_result: {'code': 200, 'data': [{'coupon_code': 'ONEDOLLAR', 'coupon_id': 1, 'coupon_point': 100}, {'coupon_code': 'TWODOLLAR', 'coupon_id': 2, 'coupon_point': 200}, {'coupon_code': 'THREEDOLLAR', 'coupon_id': 3, 'coupon_point': 300}, {'coupon_code': 'FOURDOLLAR', 'coupon_id': 4, 'coupon_point': 400}]}
+
+
+
+
+
+
+
   stripe-cli:
     image: stripe/stripe-cli
     container_name: stripe-cli

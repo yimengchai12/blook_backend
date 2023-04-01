@@ -20,7 +20,7 @@ from invokes import invoke_http
 booking_URL = "http://booking:5002/booking"
 customer_URL = "http://customer:5003/customer"
 send_email_URL = "http://send_email:5020/send_email"
-
+coupon_URL = "http://coupon:5013/coupon" 
 
 # This is your test secret API key.
 stripe.api_key = "sk_test_51Miv0mDVT8kjXSeFhyISeAE8DvBk8A2i1naRDbWDYNEblx1IiBTkbG5fXBG38daqRngJSiq1cpx25hSkZ1OPNrTN00oqJCRNJF"
@@ -79,7 +79,8 @@ def stripe_webhook():
         print(event["data"]['object']["client_reference_id"])
         booking = json.loads(event["data"]['object']["client_reference_id"])
         print(event)
-
+        if event["data"]['object']["amount_subtotal"] != event["data"]['object']["amount_total"]: 
+            booking["payment_amount"] = str(float(event["data"]['object']["amount_total"])/100)
 
         print('\n-----Invoking booking microservice-----')
         booking_result = invoke_http(booking_URL, method='POST', json=booking)
@@ -140,6 +141,16 @@ def stripe_webhook():
             print('customer_result:', customer_result)
             code = customer_result["code"]
             message = json.dumps(customer_result)
+
+            if "coupon_id" in booking:
+                print('\n-----Invoking coupon microservice-----')
+                coupon_id = booking["coupon_id"]
+                coupon_result = invoke_http(
+                    coupon_URL + "/" + customer_id + "/" + coupon_id, method='DELETE')
+                print('coupon_result:', coupon_result)
+                code = coupon_result["code"]
+                message = json.dumps(coupon_result)
+
 
             print('\n-----Invoking email microservice-----')
     

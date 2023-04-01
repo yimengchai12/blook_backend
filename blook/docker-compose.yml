@@ -209,10 +209,40 @@ services:
     ports:
       - "5020:5020"
 
-
+  ##################################
+  # stripe
+  ##################################
   stripe-cli:
     image: stripe/stripe-cli
     container_name: stripe-cli
     command: "listen --api-key rk_test_51Miv0mDVT8kjXSeFW0WFB8fY9s54w4eSn7QJDYFgXiMCKdVH08eTQZfApoOwI261KyLrrhVIlq4hFUUaadX9npkf00ov0KzqBs --forward-to webhook:5010/webhook"
-  
+
+
+  ##################################
+  # Recommender
+  ##################################
+  recommender:
+    build:
+      context: ./
+      dockerfile: recommender.Dockerfile
+    image: recommender:latest
+    restart: always
+    environment:
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5100:5100"
+
+  ##################################
+  # verify_booking
+  ##################################
+  verify_booking:
+    build:
+      context: ./
+      dockerfile: verify_booking.Dockerfile
+    image: verify_booking:latest
+    restart: always
+    environment:
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5030:5030"
   

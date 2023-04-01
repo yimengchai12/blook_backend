@@ -13,19 +13,21 @@ app = Flask(__name__)
 CORS(app)
 
 booking_URL = "http://localhost:5002/booking"
-send_email_URL = "http://localhost:5020/send_email"
+send_email_URL = "http://127.0.0.1:5020/send_email"
 pendingReview_URL = "http://localhost:5004/pendingReview"
 
 @app.route("/verify_booking", methods=['POST'])
 def receiveVerification():
-    print("----- vendor verifying booking by customer -----")
+    print("----- Starting the Verify Booking Micro Service -----\n")
     order = None
     if request.is_json:
         order = request.get_json()
         print(order)
-        print("***Successfully received verify request in JSON format***")
-        print("---Verifiying booking---")
+        print("***Successfully received verify request in JSON format***\n")
+        print("---Verifiying booking---\n")
+
         result1 = sendVerification(order)
+
         print("\n---Verifiying booking success---\n")
         print(f"Booking Status updated: {result1}\n")
 
@@ -33,7 +35,7 @@ def receiveVerification():
         #     print("---Invoking email micoservice---\n")
         #     email_result = sendVerifyBookingEmail(order)
         #     print("\n---email success---\n")
-
+        print("\n----- Ending  the Verify Booking Micro Service -----")
         return jsonify(result1), result1["code"]
     
     else:
@@ -82,19 +84,26 @@ def sendVerification(order):
                         "code": 201,
                         "data": [changed, pending_review_result['data'], email_result]
                     }
-            
+
+                # Email fail
+                print("\n---Invoking email microservice failed---")
                 return {
                         "code": 201,
                         "data": [changed, pending_review_result['data'], {"email_result": {"code" : 500}}]
                     }
 
+            # Pending review + email fail
+            print("\n---Invoking pending review microservice failed---")
             return {
                         "code": 201,
-                        "data": [changed, {"pendingReview": {"code" : 500}}, {"email_result": {"code" : 500}}]
+                        "data": [changed, {"pendingReview": {"code" : 500}}]
                     }
+
+        # update booking status + Pending review + email fail
+        print("\n---Invoking booking microservice failed---")
         return {
                         "code": 201,
-                        "data": [{"booking": {"code" : 500}}, {"pendingReview": {"code" : 500}}, {"email_result": {"code" : 500}}]
+                        "data": [{"booking": {"code" : 500}}]
                     }
 
 

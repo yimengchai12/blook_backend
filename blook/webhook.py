@@ -122,13 +122,16 @@ def stripe_webhook():
             # 4. Record new order
             # record the activity log anyway
             #print('\n\n-----Invoking activity_log microservice-----')
-            print('\n\n-----Publishing the (order info) message with routing_key=order.info-----')        
+            print('\n\n-----Publishing the (booking info) message with routing_key=order.booking-----')        
 
             # invoke_http(activity_log_URL, method="POST", json=order_result)            
-            amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="order.info", 
-                body=message)
+            amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="order.booking", 
+                body=message, properties=pika.BasicProperties(delivery_mode = 2))
         
             print("\nOrder published to RabbitMQ Exchange.\n")
+
+            print("\nBooking status ({:d}) published to the RabbitMQ Exchange:".format(
+            code), booking_result)
 
 
 
@@ -152,7 +155,7 @@ def stripe_webhook():
                 message = json.dumps(coupon_result)
 
 
-            print('\n-----Invoking email microservice-----')
+            # print('\n-----Invoking email microservice-----')
     
             # email_result = invoke_http(send_email_URL, method='POST', json=booking_result['data'])
             # print('email_result:', email_result)

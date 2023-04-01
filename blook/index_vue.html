@@ -415,15 +415,19 @@
                             },
                             body: JSON.stringify(
                                 {
-                                    "activity_id": 100,
-                                    "booking_datetime": "Mon, 22 Aug 2022 00:00:00 GMT",
-                                    "customer_id": 1,
-                                    "datetime": "Sat, 31 Dec 2022 00:00:00 GMT",
-                                    "id": 1,
-                                    "payment_amount": 65.0,
-                                    "status": "NO",
-                                    "total_pax": 1
-                                })
+                                    "booking_id" : 7
+                                }
+                                // {
+                                //     "activity_id": 100,
+                                //     "booking_datetime": "Mon, 22 Aug 2022 00:00:00 GMT",
+                                //     "customer_id": 1,
+                                //     "datetime": "Sat, 31 Dec 2022 00:00:00 GMT",
+                                //     "id": 1,
+                                //     "payment_amount": 65.0,
+                                //     "status": "NO",
+                                //     "total_pax": 1
+                                // }
+                                )
                         } )
                         .then(response => response.json())
                         .then(data => {

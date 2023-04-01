@@ -5,6 +5,8 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import requests
 from invokes import invoke_http
+import amqp_setup
+import pika
 
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
@@ -21,11 +23,11 @@ def receiveVerification():
     print("\n----- Starting the Verify Booking Micro Service -----\n")
     order = None
     if request.is_json:
-        order = request.get_json()
-        print(order)
+        booking_id = request.json.get('booking_id')
+        print(booking_id)
         print("***Successfully received verify request in JSON format***\n")
 
-        result1 = sendVerification(order)
+        result1 = sendVerification(booking_id)
 
         print("\n---Verifiying booking success---\n")
         print(f"Booking Status updated: {result1}\n")
@@ -47,22 +49,25 @@ def receiveVerification():
                         "message": "Order should be in JSON."}), 400  # Bad Request input
 
 
-def sendVerification(order):
+def sendVerification(booking_id):
         print("\n -------------Processing the verification of booking-----------------\n")
-        print(f"Order:    {order}")
-        booking_ID = order["id"]
-        activity_id = order['activity_id']
-        customer_id = order["customer_id"]
-        test = '{"status": "YES"}'
-        update = json.loads(test)
+        print(f"Order:    {booking_id}")
+        # test = '{"status": "YES"}'
+        # update = json.loads(test)
 
         # PUT to update booking status to YES
         print("\n----- Update booking -----")
-        print("\nSending PUT request to: " + booking_URL + "/" + str(booking_ID))
-        bookingUpdate_result = invoke_http(booking_URL + "/" + str(booking_ID), method='PUT', json=update)
+        print("\nSending PUT request to: " + booking_URL + "/" + str(booking_id))
+        bookingUpdate_result = invoke_http(booking_URL + "/" + str(booking_id), method='PUT')
         print(bookingUpdate_result)
         changed = bookingUpdate_result['data']
+        message = json.dumps(bookingUpdate_result)
+        code = bookingUpdate_result['code']
+        print("check"+ message)
+        amqp_setup.check_setup()
         print(f"Successfully updated: {changed}")
+        activity_id = changed['activity_id']
+        customer_id = changed["customer_id"]
 
         # POST to add new row into pendingReviews
         if bookingUpdate_result['code'] in range(200,300):
@@ -73,30 +78,45 @@ def sendVerification(order):
 
 
             if pending_review_result['code'] in range(200,300):
+
+                print('\n\n-----Publishing the (redeem info) message with routing_key=order.redeem-----')        
+                amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="order.redeem", 
+                    body=message, properties=pika.BasicProperties(delivery_mode = 2))
+            
+                print("\nOrder published to RabbitMQ Exchange.\n")
+
+                print("\nBooking status ({:d}) published to the RabbitMQ Exchange:".format(
+                code), bookingUpdate_result)
+
+                return bookingUpdate_result
+
+
+
+
                 # POST to send email notification to review
-                print("\n---Invoking email microservice---")
-                email_result = invoke_http(send_email_URL, method='POST', json=update2)
+            #     print("\n---Invoking email microservice---")
+            #     email_result = invoke_http(send_email_URL, method='POST', json=update2)
                 
-                if email_result['code'] in range(200,300):
-                    print(f"Successfully sent: {email_result}")
-                    return {
-                        "code": 201,
-                        "data": [changed, pending_review_result['data'], email_result]
-                    }
+            #     if email_result['code'] in range(200,300):
+            #         print(f"Successfully sent: {email_result}")
+            #         return {
+            #             "code": 201,
+            #             "data": [changed, pending_review_result['data'], email_result]
+            #         }
 
-                # Email fail
-                print("\n---Invoking email microservice failed---")
-                return {
-                        "code": 201,
-                        "data": [changed, pending_review_result['data'], {"email_result": {"code" : 500}}]
-                    }
+            #     # Email fail
+            #     print("\n---Invoking email microservice failed---")
+            #     return {
+            #             "code": 201,
+            #             "data": [changed, pending_review_result['data'], {"email_result": {"code" : 500}}]
+            #         }
 
-            # Pending review + email fail
-            print("\n---Invoking pending review microservice failed---")
-            return {
-                        "code": 201,
-                        "data": [changed, {"pendingReview": {"code" : 500}}]
-                    }
+            # # Pending review + email fail
+            # print("\n---Invoking pending review microservice failed---")
+            # return {
+            #             "code": 201,
+            #             "data": [changed, {"pendingReview": {"code" : 500}}]
+            #         }
 
         # update booking status + Pending review + email fail
         print("\n---Invoking booking microservice failed---")

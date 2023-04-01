@@ -202,6 +202,25 @@ services:
     ports:
       - "5020:5020"
 
+  send_redeem_email:
+    build:
+      context: ./
+      dockerfile: send_redeem_email.Dockerfile
+    image: send_redeem_email:latest
+    restart: always
+    depends_on:
+      - rabbitmq
+    environment:
+      rabbit_host: rabbitmq
+      rabbit_port: 5672
+      booking_URL: "http://booking:5002/booking"
+      customer_URL: "http://localhost:5003/customer"
+      activity_URL: "http://127.0.0.1:5001/activity"
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5022:5022"
+
+
   ##################################
   # stripe
   ##################################
@@ -236,7 +255,11 @@ services:
       dockerfile: verify_booking.Dockerfile
     image: verify_booking:latest
     restart: always
+    depends_on:
+      - rabbitmq
     environment:
+      rabbit_host: rabbitmq
+      rabbit_port: 5672
       booking_URL: "http://localhost:5002/booking"
       send_email_URL: "http://127.0.0.1:5020/send_email"
       pendingReview_URL: "http://localhost:5004/pendingReview"

@@ -14,8 +14,7 @@ insert into coupon (coupon_id, coupon_point, coupon_code) values (4, 400, 'FOURD
 
 
 create table Coupon_Customer(
-
-    coupon_customer_id INT NOT NULL PRIMARY KEY,
+    coupon_customer_id INT AUTO_INCREMENT PRIMARY KEY,
     coupon_id INT NOT NULL,
     coupon_point INT NOT NULL,
     customer_id INT NOT NULL

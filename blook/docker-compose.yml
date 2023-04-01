@@ -38,7 +38,8 @@ services:
       PYTHONUNBUFFERED: 1
     ports:
       - "5004:5004"
-
+    networks:
+      - kong-net
 
 
  
@@ -278,19 +279,19 @@ services:
       - kong-net
 
   add_review:
-      build:
-        context: ./
-        dockerfile: add_review.Dockerfile
-      image: add_review:latest
-      restart: always
-      environment:
-        customer_URL: "http://localhost:5003/customer/"
-        review_URL: "http://localhost:5004/"
-        PYTHONUNBUFFERED: 1
-      ports:
-        - "5144:5144"
-      networks:
-      - kong-net
+    build:
+      context: ./
+      dockerfile: add_review.Dockerfile
+    image: add_review:latest
+    restart: always
+    environment:
+      customer_URL: "http://localhost:5003/customer/"
+      review_URL: "http://localhost:5004/"
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5144:5144"
+    networks:
+    - kong-net
   ##################################
   # verify_booking
   ##################################

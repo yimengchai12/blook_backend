@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from os import environ
 from flask_cors import CORS
+import json
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/customer'
@@ -119,12 +120,15 @@ def create_customer(id):
 
 
 @app.route("/customer/<string:id>", methods=['PUT'])
-def update_customer(id):
+def update_customer_point(id):
     customer = Customer.query.filter_by(id=id).first()
     if customer:
         data = request.get_json()
-        if data['payment_amount']:
+        # if data['payment_amount']:
+        if 'payment_amount' in data:
             customer.point = int(data['payment_amount']) + customer.point
+        if 'data' in data:
+            customer.point = customer.point - int(data['data']["coupon"]['coupon_point'])
         db.session.commit()
         return jsonify(
             {

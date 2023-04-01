@@ -79,6 +79,7 @@ def processRecommendation():
         mem['description'] = activity_result['data']['description']
         mem['price'] = activity_result['data']['price']
         mem['address'] = activity_result['data']['address']
+        mem["average_rating"] = output_dict[activity_id]
         output.append(mem)
         mem ={}
          

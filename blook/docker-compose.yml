@@ -237,6 +237,9 @@ services:
     environment:
       rabbit_host: rabbitmq
       rabbit_port: 5672
+      booking_URL: "http://booking:5002/booking"
+      customer_URL: "http://localhost:5003/customer"
+      activity_URL: "http://127.0.0.1:5001/activity"
       PYTHONUNBUFFERED: 1
     ports:
       - "5020:5020"
@@ -260,6 +263,8 @@ services:
     image: recommender:latest
     restart: always
     environment:
+      activity_URL: "http://127.0.0.1:5001/activity"
+      review_URL: "http://127.0.0.1:5004/review"
       PYTHONUNBUFFERED: 1
     ports:
       - "5100:5100"
@@ -274,6 +279,9 @@ services:
     image: verify_booking:latest
     restart: always
     environment:
+      booking_URL: "http://localhost:5002/booking"
+      send_email_URL: "http://127.0.0.1:5020/send_email"
+      pendingReview_URL: "http://localhost:5004/pendingReview"
       PYTHONUNBUFFERED: 1
     ports:
       - "5030:5030"

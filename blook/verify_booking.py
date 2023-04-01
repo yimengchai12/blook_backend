@@ -18,13 +18,12 @@ pendingReview_URL = "http://localhost:5004/pendingReview"
 
 @app.route("/verify_booking", methods=['POST'])
 def receiveVerification():
-    print("----- Starting the Verify Booking Micro Service -----\n")
+    print("\n----- Starting the Verify Booking Micro Service -----\n")
     order = None
     if request.is_json:
         order = request.get_json()
         print(order)
         print("***Successfully received verify request in JSON format***\n")
-        print("---Verifiying booking---\n")
 
         result1 = sendVerification(order)
 
@@ -59,7 +58,7 @@ def sendVerification(order):
 
         # PUT to update booking status to YES
         print("\n----- Update booking -----")
-        print("\nPOST to: " + booking_URL + "/" + str(booking_ID))
+        print("\nSending PUT request to: " + booking_URL + "/" + str(booking_ID))
         bookingUpdate_result = invoke_http(booking_URL + "/" + str(booking_ID), method='PUT', json=update)
         print(bookingUpdate_result)
         changed = bookingUpdate_result['data']

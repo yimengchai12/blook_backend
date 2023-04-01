@@ -115,7 +115,7 @@ def create_review():
     activity_id = request.json.get('activity_id', None)
     rating = request.json.get('rating', None)
     review_text = request.json.get('review_text', None)
-    review = Review(customer_id=customer_id, activity_id=activity_id, rating=rating, review_text=review_text)
+    review = Review(customer_id=customer_id, activity_id=activity_id, rating=rating, review_text=review_text, created=datetime.now())
     # review = Order(customer_id=customer_id, status='NEW')
     try:
         db.session.add(review)
@@ -204,11 +204,8 @@ def find_pending_reviews(customer_id):
 # Add new row when booking has been verified (new review pending by customer)
 @app.route("/pendingReview", methods=['POST'])
 def add_pending_review():
-    print("test0")
     activity_id = request.json.get('activity_id')
-    print("test1")
     customer_id = request.json.get('customer_id')
-    print("test2")
     new_review = pendingReview(activity_id=activity_id, customer_id=customer_id)
     try:
         db.session.add(new_review)
@@ -230,6 +227,21 @@ def add_pending_review():
             "data": new_review.json()
         }
     ), 201
+
+
+# DELETE first occurence of activity_id X customer_id when review has been added
+@app.route('/pendingReview/<int:customer_id>/<int:activity_id>', methods=['DELETE'])
+def delete_pending_review(customer_id, activity_id):
+    pending_review = pendingReview.query.filter_by(customer_id=customer_id, activity_id=activity_id).first()
+
+    if not pending_review:
+        return {'error': 'Pending review not found.'}, 404
+
+    db.session.delete(pending_review)
+    db.session.commit()
+
+    return {'message': 'Pending review deleted successfully.'}, 200
+
 
 if __name__ == '__main__':
     print("This is flask for " + os.path.basename(__file__) + ": manage orders ...")

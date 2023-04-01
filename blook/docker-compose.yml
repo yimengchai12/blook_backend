@@ -244,16 +244,16 @@ services:
     ports:
       - "5030:5030"
 
-    add_review:
-      build:
-        context: ./
-        dockerfile: add_review.Dockerfile
-      image: add_review:latest
-      restart: always
-      environment:
-        customer_URL: "http://localhost:5003/customer/"
-        review_URL: "http://localhost:5004/"
-        PYTHONUNBUFFERED: 1
-      ports:
-        - "5100:5100"
+    # add_review:
+    #   build:
+    #     context: ./
+    #     dockerfile: add_review.Dockerfile
+    #   image: add_review:latest
+    #   restart: always
+    #   environment:
+    #     customer_URL: "http://localhost:5003/customer/"
+    #     review_URL: "http://localhost:5004/"
+    #     PYTHONUNBUFFERED: 1
+    #   ports:
+    #     - "5150:5150"
   

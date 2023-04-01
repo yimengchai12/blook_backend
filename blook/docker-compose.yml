@@ -2,12 +2,7 @@ version: "3.8"
 
 volumes:
   rabbitmq_data:
-  pgdata: 
-  kongadata:
 
-networks:
-  kong-net:
-    driver: bridge
 
 services:
  
@@ -25,6 +20,8 @@ services:
       PYTHONUNBUFFERED: 1
     ports:
       - "5002:5002"
+    networks:
+      - kong-net
 
 
     ###################################
@@ -59,6 +56,8 @@ services:
       PYTHONUNBUFFERED: 1
     ports: 
       - "5003:5003"
+    networks:
+      - kong-net
   #######################################################
   # Paypal Record: The paypal Record microservice
   #######################################################
@@ -72,6 +71,8 @@ services:
       PYTHONUNBUFFERED: 1
     ports: 
       - "5006:5006"
+    networks:
+      - kong-net
 
   webhook:
     build:
@@ -87,6 +88,8 @@ services:
       PYTHONUNBUFFERED: 1
     ports: 
       - "5010:5010"
+    networks:
+      - kong-net
 
   ####################################
   # RabbitMQ: The messaging broker   
@@ -100,6 +103,8 @@ services:
       - "15672:15672"
     volumes: 
       - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - kong-net
       
 
   ###################################
@@ -117,6 +122,8 @@ services:
       rabbit_host: rabbitmq
       rabbit_port: 5672
       PYTHONUNBUFFERED: 1
+    networks:
+      - kong-net
 
   get_booking_details:
     build:
@@ -139,6 +146,8 @@ services:
       PYTHONUNBUFFERED: 1
     ports:
       - "5012:5012"
+    networks:
+      - kong-net
 
   get_coupons:
     build:
@@ -160,6 +169,8 @@ services:
       PYTHONUNBUFFERED: 1
     ports:
       - "5014:5014"
+    networks:
+      - kong-net
   ##################################
   # Activity: The ACtivity microservice
   ##################################
@@ -174,6 +185,8 @@ services:
       PYTHONUNBUFFERED: 1
     ports:
       - "5001:5001"
+    networks:
+      - kong-net
 
   coupon:
     build:
@@ -186,6 +199,8 @@ services:
       PYTHONUNBUFFERED: 1
     ports:
       - "5013:5013"
+    networks:
+      - kong-net
 
   ##################################
   # Send Email: The email notification microservice
@@ -204,6 +219,8 @@ services:
       PYTHONUNBUFFERED: 1
     ports:
       - "5020:5020"
+    networks:
+      - kong-net
 
 
   stripe-cli:
@@ -212,86 +229,10 @@ services:
     command: "listen --api-key $${STRIPE_API_KEY} --forward-to webhook:5010/webhook"
     env_file:
       - stripe_cli.env
+
+
+networks:
+  kong-net:
+    external:
+      name: kong_kong-net
  
-  #######################################
-  # Postgres: The database used by Kong
-  #######################################
-  kong-database:
-    image: postgres:9.6
-    platform: linux/amd64
-    restart: always
-    networks:
-      - kong-net
-    environment:
-      POSTGRES_DB: kong
-      POSTGRES_USER: kong
-      POSTGRES_PASSWORD: password
-    ports:
-      - "5432:5432"
-    healthcheck:
-      test: ["CMD", "pg_isready", "-U", "kong"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-
-  #######################################
-  # Kong database migration
-  #######################################
-  kong-migration:
-    image: kong:2.0.4
-    platform: linux/amd64
-    command: "kong migrations bootstrap"
-    restart: on-failure
-    networks:
-      - kong-net
-    environment:
-      KONG_DATABASE: postgres
-      KONG_PG_HOST: kong-database
-      KONG_PG_USER: kong
-      KONG_PG_PASSWORD: password
-    depends_on:
-      - kong-database
-
-  #######################################
-  # Kong: The API Gateway
-  #######################################
-  kong:
-    image: kong:2.0.4
-    platform: linux/amd64
-    restart: always
-    networks:
-      - kong-net
-    environment:
-      KONG_DATABASE: postgres
-      KONG_PG_HOST: kong-database
-      KONG_PG_USER: kong
-      KONG_PG_PASSWORD: password
-      KONG_PROXY_LISTEN: 0.0.0.0:8000
-      KONG_ADMIN_LISTEN: 0.0.0.0:8001
-    depends_on:
-      - kong-migration
-    ports:
-      - "8000:8000"
-  
-  #######################################
-  # Konga: Kong GUI
-  #######################################
-  konga:
-    image: pantsel/konga
-    restart: always
-    networks:
-        - kong-net
-    environment:
-      DB_ADAPTER: postgres
-      DB_HOST: kong-database
-      DB_USER: kong
-      DB_PASSWORD: password
-      DB_DATABASE: konga_db
-    depends_on:
-      - kong
-    ports:
-      - "1337:1337"
-    volumes:
-      - kongadata:/app/kongadata

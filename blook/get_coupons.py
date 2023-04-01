@@ -20,7 +20,7 @@ error_URL = "http://localhost:5008/error"
 # payment_URL = "http://payment:5006/payment"
 
 
-# { "customer_id": 2, "activity_id": 2 }
+# to get coupons available for customer based on their points
 @app.route("/get_coupons/<string:customer_id>", methods=['GET'])
 def get_coupons(customer_id):
     # Simple check of input format and data of the request are JSON

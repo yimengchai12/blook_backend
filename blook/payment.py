@@ -97,7 +97,7 @@ def create_checkout_session(price_id, quantity):
 
 
 @app.route('/create-checkout-session/<string:price_id>/<string:quantity>/<string:coupon_id>', methods=['POST'])
-def create_checkout_session(price_id, quantity, coupon_id):
+def create_checkout_session_with_Coupon(price_id, quantity, coupon_id):
     try:
         checkout_details = request.get_json()
         print("\nReceived checkout details in JSON:", checkout_details)

@@ -149,6 +149,29 @@ def get_customer_linked_coupon(customer_id):
     ), 404
 
 
+#delete coupon 
+@app.route("/coupon/<string:customer_id>/<string:coupon_id>", methods=['DELETE'])
+def delete_customer_linked_coupon(customer_id, coupon_id):
+    coupon = Coupon_Customer.query.filter_by(customer_id = customer_id, coupon_id = coupon_id).first()
+    if coupon:
+        db.session.delete(coupon)
+        db.session.commit()
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "coupon": coupon.json()
+                }
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "There are no existing coupon."
+        }
+    ), 404
+
+
 
 # @app.route("/coupon/<string:id>", methods=['POST'])
 # def create_activity(id):

@@ -24,17 +24,17 @@ services:
     ###################################
   # Review: The Review microservice
   ###################################
-  # review:
-  #   build:
-  #     context: ./
-  #     dockerfile: review.Dockerfile
-  #   image: review:latest
-  #   restart: always
-  #   environment:
-  #     dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/review
-  #     PYTHONUNBUFFERED: 1
-  #   ports:
-  #     - "5004:5004"
+  review:
+    build:
+      context: ./
+      dockerfile: review.Dockerfile
+    image: review:latest
+    restart: always
+    environment:
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/review
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5004:5004"
 
 
 
@@ -95,21 +95,6 @@ services:
     volumes: 
       - rabbitmq_data:/var/lib/rabbitmq
       
-  #################################################
-  # Activity Log: The Activity Log microservice
-  #################################################
-  # booking_log:
-  #   build:
-  #     context: ./
-  #     dockerfile: booking_log.Dockerfile
-  #   image: blook/booking_log:esd
-  #   restart: always
-  #   depends_on:
-  #     - rabbitmq
-  #   environment:
-  #     rabbit_host: rabbitmq
-  #     rabbit_port: 5672
-  #     PYTHONUNBUFFERED: 1
 
   ###################################
   # Error: The Error microservice
@@ -126,33 +111,6 @@ services:
       rabbit_host: rabbitmq
       rabbit_port: 5672
       PYTHONUNBUFFERED: 1
-
-  ###############################################
-  # Place Booking: The Place Booking microservice
-  ###############################################
-  place_booking:
-    build:
-      context: ./
-      dockerfile: place_booking.Dockerfile
-    image: place_booking:latest
-    restart: always
-    depends_on:
-      # - activity
-      - customer
-      - booking
-      # - booking_log
-      # - error
-      # - rabbitmq
-    environment:
-      rabbit_host: rabbitmq
-      rabbit_port: 5672
-      booking_URL: http://booking:5002/booking
-      customer_URL: http://customer:5003/customer
-      # shipping_record_URL: http://shipping_record:5002/shipping_record 
-      PYTHONUNBUFFERED: 1
-    ports:
-      - "5111:5111"
-
 
   get_booking_details:
     build:

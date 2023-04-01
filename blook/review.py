@@ -88,6 +88,18 @@ def get_all():
     ), 404
 
 
+@app.route('/reviews/customer/<int:customer_id>')
+def get_reviews_by_customer(customer_id):
+    reviews = Review.query.filter_by(customer_id=customer_id).all()
+    review_list = [review.json() for review in reviews]
+    return jsonify(
+        {
+            "code" : 200,
+            "data" : review_list
+        }
+    ), 200
+
+
 @app.route("/review/<string:activity_id>")
 def find_by_activity_id(activity_id):
     reviewlist = Review.query.filter_by(activity_id=activity_id).all()

@@ -146,6 +146,31 @@ def update_customer_point(id):
         }
     ), 404
 
+@app.route("/customer/<string:id>/add_review", methods=['PUT'])
+def addReviewPoint(id):
+    customer = Customer.query.filter_by(id=id).first()
+    if customer:
+        if customer.point == None:
+            customer.point = 100
+        else:
+            customer.point += 100
+        db.session.commit()
+        return jsonify(
+            {
+                "code": 200,
+                "data": customer.json()
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "data": {
+                "id": id
+            },
+            "message": "Customer not found."
+        }
+    ), 404
+
 
 @app.route("/customer/<string:id>", methods=['DELETE'])
 def delete_customer(id):

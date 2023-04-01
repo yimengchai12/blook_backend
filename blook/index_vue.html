@@ -30,6 +30,11 @@
         class="my-1 btn btn-sm btn-secondary"></button>
         <button @click="paywithcoupon" type="button"
         class="my-1 btn btn-sm btn-secondary">paywithcoupon</button>
+        <button @click="verifybooking" type="button"
+        class="my-1 btn btn-sm btn-secondary">verifybooking</button>
+        <div class="row" v-show="!orderPlaced">
+            <button @click="submitreview" type="button"
+        class="my-1 btn btn-sm btn-secondary">submmitreview</button>
         <div class="row" v-show="!orderPlaced">
             <div id="main" class="col-8">
                 Search by ISBN: <input v-model="isbn13" placeholder="ISBN number">
@@ -405,6 +410,52 @@
                             console.log(data)
                         })
                 },
+                verifybooking(){
+                    fetch('http://localhost:5030/verify_booking', {
+                            method: "POST",
+                            headers: {
+                                "Content-type": "application/json"
+                            },
+                            body: JSON.stringify(
+                                {
+                                    "booking_id" : 8
+                                }
+                                // {
+                                //     "activity_id": 100,
+                                //     "booking_datetime": "Mon, 22 Aug 2022 00:00:00 GMT",
+                                //     "customer_id": 1,
+                                //     "datetime": "Sat, 31 Dec 2022 00:00:00 GMT",
+                                //     "id": 1,
+                                //     "payment_amount": 65.0,
+                                //     "status": "NO",
+                                //     "total_pax": 1
+                                // }
+                                )
+                        } )
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data)
+                        })
+                },
+                submitreview(){
+                    fetch('http://localhost:5144/add_review', {
+                            method: "POST",
+                            headers: {
+                                "Content-type": "application/json"
+                            },
+                            body: JSON.stringify(
+                                {
+                                "activity_id": 77,
+                                "customer_id": 8,
+                                "rating": 4,
+                                "review_text": "The airplane tour was amazing! The pilot was very knowledgeable and gave us a great tour of the city from the sky."
+                                })
+                        } )
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data)
+                        })
+                }
             },
             created () {
                 // on Vue instance created, load the book list

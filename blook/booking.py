@@ -150,9 +150,10 @@ def update_order(booking_id):
             ), 404
 
         # update status
-        data = request.get_json()
-        if data['status']:
-            booking.status = data['status']
+        print("bookingstatuss  " + booking.status)
+        if booking.status == "NO":
+            booking.status = 'YES'
+            db.session.flush()
             db.session.commit()
             return jsonify(
                 {
@@ -160,6 +161,17 @@ def update_order(booking_id):
                     "data": booking.json()
                 }
             ), 200
+        else:
+            return jsonify(
+                {
+                    "code": 400,
+                    "data": {
+                        "booking_id": booking_id
+                    },
+                    "message": "Booking already redeemed."
+                }
+            ), 400
+
     except Exception as e:
         return jsonify(
             {

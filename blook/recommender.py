@@ -7,9 +7,9 @@ from os import environ
 import requests
 from invokes import invoke_http
 import numpy
-import amqp_setup
-import pika
-import json
+# import amqp_setup
+# import pika
+# import json
 
 app = Flask(__name__)
 CORS(app)
@@ -71,14 +71,18 @@ def processRecommendation():
     print(f"---------This is the dict of recco in the format of (activity_id: avg_rating): {output_dict}---------")
 
     output = []
+    mem = {}
     for activity_id in output_dict:
         activity_result = invoke_http(activity_URL + "/" + str(activity_id), method='GET', json=None)
-        activity_name = activity_result['data']['name']
-        activity_desc = activity_result['data']['description']
-        activity_price = activity_result['data']['price']
-        activity_address = activity_result['data']['address']
-        activity_rating = output_dict[activity_id]
-        output.append([activity_id, activity_name, activity_desc, activity_price, activity_address, activity_rating])
+        mem["id"] = activity_id
+        mem['name'] = activity_result['data']['name']
+        mem['description'] = activity_result['data']['description']
+        mem['price'] = activity_result['data']['price']
+        mem['address'] = activity_result['data']['address']
+        mem["average_rating"] = output_dict[activity_id]
+        output.append(mem)
+        mem ={}
+         
     print(f"THIS IS THE OUTPUT BEFORE JSON:  {output}")
     return {
                 "code": 200,

@@ -14,15 +14,13 @@ for the creation of booking
 
 
 result from get_booking_details: 
-{'code': 201, 
- 'data': {'activity_result': {'code': 200, 'data': {'activity_id': 100, 'booking_datetime': 'Mon,
-                22 Aug 2022 00: 00: 00 GMT', 'customer_id': 1, 'datetime': 'Sat,
-                31 Dec 2022 00: 00: 00 GMT', 'id': 1, 'payment_amount': 65.0, 'status': 'YES', 'total_pax': 1
+{"code": 201, 
+ "data": {"activity_result": {"code": 200, "data": {"activity_id": 100, "booking_datetime": "Mon, 22 Aug 2022 00: 00: 00 GMT", "customer_id": 1, "datetime": "Sat, 31 Dec 2022 00: 00: 00 GMT", "id": 1, "payment_amount": 65.0, "status": "YES", "total_pax": 1
             }
-        }, 'customer_result': {'code': 200, 'data': {'address': '93 Lawn Drive', 'billing_address': None, 'email': 'pbony0@dmoz.org', 'first_name': 'Penrod', 'gender': 'Male', 'id': 1, 'last_name': 'Bony', 'phone': '+86 (166) 208-3670'
+        }, "customer_result": {"code": 200, "data": {"address": "93 Lawn Drive", "billing_address": "None", "email": "pbony0@dmoz.org", "first_name": "Penrod", "gender": "Male", "id": 1, "last_name": "Bony", "phone": "+86 (166) 208-3670"
             }
         }, 
-            'product_result': {'code': 200, 'data': {'price_id': 'price_1Mqf26DVT8kjXSeFSdNWI8Tb'
+            "product_result": {"code": 200, "data": {"price_id": "price_1Mqf26DVT8kjXSeFSdNWI8Tb"
             }
         }
     }

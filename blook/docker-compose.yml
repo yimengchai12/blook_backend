@@ -242,6 +242,8 @@ services:
       PYTHONUNBUFFERED: 1
     ports:
       - "5022:5022"
+    networks:
+      - kong-net
 
 
   ##################################
@@ -272,6 +274,8 @@ services:
       PYTHONUNBUFFERED: 1
     ports:
       - "5100:5100"
+    networks:
+      - kong-net
 
   add_review:
       build:
@@ -285,6 +289,8 @@ services:
         PYTHONUNBUFFERED: 1
       ports:
         - "5144:5144"
+      networks:
+      - kong-net
   ##################################
   # verify_booking
   ##################################
@@ -305,6 +311,8 @@ services:
       PYTHONUNBUFFERED: 1
     ports:
       - "5030:5030"
+    networks:
+      - kong-net
 
     
   

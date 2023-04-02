@@ -83,12 +83,12 @@ def create_checkout_session():
             ],
             mode='payment',
             # success_url=YOUR_DOMAIN + '/success.html',
-            success_url = 'http://127.0.0.1:5500/blook/index_vue.html',
+            success_url = 'http://127.0.0.1:3000',
             # cancel_url=YOUR_DOMAIN + '/cancel.html',
             # allow_promotion_codes = True,
             client_reference_id = json.dumps(checkout_details),
             # discounts=[{'coupon': ''},],
-            cancel_url = 'http://127.0.0.1:5500/blook/index_vue.html',
+            cancel_url = 'http://127.0.0.1:3000',
         )
     except Exception as e:
         return str(e)

@@ -29,8 +29,7 @@ def receiveVerification():
 
         result1 = sendVerification(booking_id)
 
-        print("\n---Verifiying booking success---\n")
-        print(f"Booking Status updated: {result1}\n")
+        print(f"STATUS: {result1}\n")
 
         # if result['code'] in range(200,300):
         #     print("---Invoking email micoservice---\n")
@@ -51,7 +50,7 @@ def receiveVerification():
 
 def sendVerification(booking_id):
         print("\n -------------Processing the verification of booking-----------------\n")
-        print(f"Order:    {booking_id}")
+        print(f"Booking ID:    {booking_id}")
         # test = '{"status": "YES"}'
         # update = json.loads(test)
 
@@ -63,11 +62,14 @@ def sendVerification(booking_id):
         changed = bookingUpdate_result['data']
         message = json.dumps(bookingUpdate_result)
         code = bookingUpdate_result['code']
-        print("check"+ message)
+        print("check: "+ message)
         amqp_setup.check_setup()
         print(f"Successfully updated: {changed}")
-        activity_id = changed['activity_id']
-        customer_id = changed["customer_id"]
+
+        bookingGET_result = invoke_http(booking_URL + "/" + str(booking_id), method='GET')
+        print(f"\nGET RESULT: {bookingGET_result}")
+        activity_id = bookingGET_result['data']['activity_id']
+        customer_id = bookingGET_result['data']["customer_id"]
 
         # POST to add new row into pendingReviews
         if bookingUpdate_result['code'] in range(200,300):
@@ -87,6 +89,8 @@ def sendVerification(booking_id):
 
                 print("\nBooking status ({:d}) published to the RabbitMQ Exchange:".format(
                 code), bookingUpdate_result)
+
+                print("\n---Verifiying booking success---\n")
 
                 return bookingUpdate_result
 
@@ -122,7 +126,8 @@ def sendVerification(booking_id):
         print("\n---Invoking booking microservice failed---")
         return {
                         "code": 201,
-                        "data": [{"booking": {"code" : 500}}]
+                        "message": "Booking has already been redeemed",
+                        "data": [{"booking": {"code" : 500}}],
                     }
 
 

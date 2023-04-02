@@ -44,20 +44,20 @@ def get_product_id(product_id):
     product = stripe.Product.retrieve(product_id)
     # Get the default price ID from the product object
     default_price_id = product.default_price
-
+    return default_price_id
     # Print the default price ID
-    return jsonify(
-            {
-                "code": 200,
-                "data": {
-                    "price_id": default_price_id
-                }
-            }
-        )
+    # return jsonify(
+    #         {
+    #             "code": 200,
+    #             "data": {
+    #                 "price_id": default_price_id
+    #             }
+    #         }
+    #     )
 
 # from get_booking_details result, pass result.data.product_result.price_id, quantity from front end. pass a json from front end to receive request on backend.
-@app.route('/create-checkout-session/<string:price_id>/<string:quantity>', methods=['POST'])
-def create_checkout_session(price_id, quantity):
+@app.route('/create-checkout-session', methods=['POST'])
+def create_checkout_session():
     try:
         checkout_details = request.get_json()
         print("\nReceived checkout details in JSON:", checkout_details)
@@ -65,11 +65,12 @@ def create_checkout_session(price_id, quantity):
         print("\nCustomer ID:", customer_id)
         activity_id = checkout_details["activity_id"]
         print("\nActivity ID:", activity_id)
-        total_pax = checkout_details["total_pax"]
+        quantity = checkout_details["total_pax"]
         print("\nTotal Pax:", quantity)
         datetime = checkout_details["datetime"]
         print("\nDatetime:", datetime)
         payment_amount = checkout_details["payment_amount"] #need multiply by quantity on front end
+        price_id = get_product_id(activity_id)
         print("\nPayment Amount:", payment_amount)
         checkout_session = stripe.checkout.Session.create(
             line_items=[

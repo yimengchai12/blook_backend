@@ -411,7 +411,8 @@
                         })
                 },
                 verifybooking(){
-                    fetch('http://localhost:5030/verify_booking', {
+                    // fetch('http://localhost:5030/verify_booking', {
+                    fetch('http://localhost:8000/api/verify_booking', {
                             method: "POST",
                             headers: {
                                 "Content-type": "application/json"
@@ -438,7 +439,8 @@
                         })
                 },
                 submitreview(){
-                    fetch('http://localhost:5144/add_review', {
+                    // fetch('http://localhost:5144/add_review', {
+                    fetch('http://localhost:8000/api/addreview', {
                             method: "POST",
                             headers: {
                                 "Content-type": "application/json"

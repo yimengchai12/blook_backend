@@ -107,28 +107,28 @@ def processBookingDetails(customer_id, activity_id):
     
 
     # Invoke the activity microservice
-    print('\n-----Invoking payment microservice-----')
-    product_id = activity_id
-    print(payment_URL + "/" + str(product_id))
-    product_result = invoke_http(payment_URL + "/" + str(product_id))
-    print('product_result:', product_result)
+    # print('\n-----Invoking payment microservice-----')
+    # product_id = activity_id
+    # print(payment_URL + "/" + str(product_id))
+    # product_result = invoke_http(payment_URL + "/" + str(product_id))
+    # print('product_result:', product_result)
 
-    code = product_result["code"]
-    message = json.dumps(product_result)
-    if code not in range(200, 300):
-        print('\n\n-----Invoking error microservice as order fails-----')
-        invoke_http(error_URL, method="POST", json=product_result)
-        # - reply from the invocation is not used; 
-        # continue even if this invocation fails
-        print("activity status ({:d}) sent to the error microservice:".format(
-            code), product_result)
+    # code = product_result["code"]
+    # message = json.dumps(product_result)
+    # if code not in range(200, 300):
+    #     print('\n\n-----Invoking error microservice as order fails-----')
+    #     invoke_http(error_URL, method="POST", json=product_result)
+    #     # - reply from the invocation is not used; 
+    #     # continue even if this invocation fails
+    #     print("activity status ({:d}) sent to the error microservice:".format(
+    #         code), product_result)
 
-        # 7. Return error
-        return {
-                "code": 500,
-                "data": {"product": product_result},
-                "message": "product retrieval failure sent for error handling."
-            }
+    #     # 7. Return error
+    #     return {
+    #             "code": 500,
+    #             "data": {"product": product_result},
+    #             "message": "product retrieval failure sent for error handling."
+    #         }
   
 
 
@@ -140,7 +140,7 @@ def processBookingDetails(customer_id, activity_id):
         "data": {
             "activity_result": activity_result,
             "customer_result": customer_result, 
-            "product_result": product_result
+            # "product_result": product_result
         }
     }
 

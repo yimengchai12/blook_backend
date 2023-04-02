@@ -66,11 +66,11 @@ def sendVerification(booking_id):
         amqp_setup.check_setup()
         print(f"Successfully updated: {changed}")
 
-        activity_id = changed['data']['activity_id']
-        customer_id = changed['data']["customer_id"]
 
         # POST to add new row into pendingReviews
         if bookingUpdate_result['code'] in range(200,300):
+            activity_id = bookingUpdate_result['data']['activity_id']
+            customer_id = bookingUpdate_result['data']["customer_id"]
             print("\n----- Adding to pendingReviews -----")
             update2 = {"activity_id": activity_id, "customer_id":customer_id}
             pending_review_result = invoke_http(pendingReview_URL, method='POST', json=update2)

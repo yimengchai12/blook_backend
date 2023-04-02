@@ -6,6 +6,7 @@ import os
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from invokes import invoke_http
 
 from datetime import datetime
 import json
@@ -18,7 +19,9 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
 db = SQLAlchemy(app)
 
-CORS(app)  
+activity_URL = "http://activity:5001/activity"
+
+CORS(app)
 
 class Review(db.Model):
     __tablename__ = 'review'
@@ -196,10 +199,28 @@ def update_review(review_id):
 def find_pending_reviews(customer_id):
     reviewlist = pendingReview.query.filter_by(customer_id=customer_id).all()
     if reviewlist:
+        output = []
+        mem = {}
+        activity_result = invoke_http(activity_URL)
+        activity_data = activity_result['data']['activities']
+        for activty in activity_data:
+            for review in reviewlist:
+                activity_id = review.activity_id
+                activity_id1 = activty['id']
+                activity_name1 = activty['name']
+                if activity_id == activity_id1:
+                    mem["activity_id"] = activity_id
+                    mem["customer_id"] = review.customer_id
+                    mem["activity_name"] = activity_name1
+                    mem["num"] = review.num
+                    output.append(mem)
+                    mem = {}
+        print(output)
+
         return jsonify(
             {
                 "code": 200,
-                "data": [review.json() for review in reviewlist]
+                "data": output
             }
         )
     return jsonify(

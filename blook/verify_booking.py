@@ -125,7 +125,7 @@ def sendVerification(booking_id):
         # update booking status + Pending review + email fail
         print("\n---Invoking booking microservice failed---")
         return {
-                        "code": 201,
+                        "code": 500,
                         "message": "Booking has already been redeemed",
                         "data": [{"booking": {"code" : 500}}],
                     }

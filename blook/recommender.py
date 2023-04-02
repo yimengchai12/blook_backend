@@ -14,8 +14,8 @@ import numpy
 app = Flask(__name__)
 CORS(app)
 
-activity_URL = "http://127.0.0.1:5001/activity"
-review_URL = "http://127.0.0.1:5004/review"
+activity_URL = "http://activity:5001/activity"
+review_URL = "http://review:5004/review"
 
 
 @app.route("/")
@@ -32,6 +32,7 @@ def sendRecommendation():
 def processRecommendation():
     print('\n\n-----GET data from Activity microservice-----')
     activity_result = invoke_http(activity_URL, method='GET', json=None)
+    print(activity_result)
     activity_data_list = activity_result['data']['activities']
 
     print('\n\n-----GET data from Reviews microservice-----')

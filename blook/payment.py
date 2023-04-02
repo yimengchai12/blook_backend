@@ -83,12 +83,12 @@ def create_checkout_session():
             ],
             mode='payment',
             # success_url=YOUR_DOMAIN + '/success.html',
-            success_url = 'http://127.0.0.1:5500/blook/index_vue.html',
+            success_url = 'http://127.0.0.1:3000/bookingconfirm',
             # cancel_url=YOUR_DOMAIN + '/cancel.html',
             # allow_promotion_codes = True,
             client_reference_id = json.dumps(checkout_details),
             # discounts=[{'coupon': ''},],
-            cancel_url = 'http://127.0.0.1:5500/blook/index_vue.html',
+            cancel_url = 'http://127.0.0.1:3000/bookingfailed',
         )
     except Exception as e:
         return str(e)
@@ -97,8 +97,8 @@ def create_checkout_session():
     return {'url': checkout_session.url}
 
 
-@app.route('/create-checkout-session/<string:price_id>/<string:quantity>/<string:coupon_id>', methods=['POST'])
-def create_checkout_session_with_Coupon(price_id, quantity, coupon_id):
+@app.route('/create-checkout-session/<string:coupon_id>', methods=['POST'])
+def create_checkout_session_with_Coupon(coupon_id):
     try:
         checkout_details = request.get_json()
         print("\nReceived checkout details in JSON:", checkout_details)
@@ -106,11 +106,12 @@ def create_checkout_session_with_Coupon(price_id, quantity, coupon_id):
         print("\nCustomer ID:", customer_id)
         activity_id = checkout_details["activity_id"]
         print("\nActivity ID:", activity_id)
-        total_pax = checkout_details["total_pax"]
+        quantity = checkout_details["total_pax"]
         print("\nTotal Pax:", quantity)
         datetime = checkout_details["datetime"]
         print("\nDatetime:", datetime)
         payment_amount = checkout_details["payment_amount"] #need multiply by quantity on front end
+        price_id = get_product_id(activity_id)
         print("\nPayment Amount:", payment_amount)
         checkout_session = stripe.checkout.Session.create(
             line_items=[
@@ -123,12 +124,12 @@ def create_checkout_session_with_Coupon(price_id, quantity, coupon_id):
             ],
             mode='payment',
             # success_url=YOUR_DOMAIN + '/success.html',
-            success_url = 'http://127.0.0.1:5500/blook/index_vue.html',
+            success_url = 'http://127.0.0.1:3000/bookingconfirm',
             # cancel_url=YOUR_DOMAIN + '/cancel.html',
             # allow_promotion_codes = True,
             client_reference_id = json.dumps(checkout_details),
             discounts=[{'coupon': coupon_id},],
-            cancel_url = 'http://127.0.0.1:5500/blook/index_vue.html',
+            cancel_url =  'http://127.0.0.1:3000/bookingfailed',
         )
     except Exception as e:
         return str(e)

@@ -66,10 +66,8 @@ def sendVerification(booking_id):
         amqp_setup.check_setup()
         print(f"Successfully updated: {changed}")
 
-        bookingGET_result = invoke_http(booking_URL + "/" + str(booking_id), method='GET')
-        print(f"\nGET RESULT: {bookingGET_result}")
-        activity_id = bookingGET_result['data']['activity_id']
-        customer_id = bookingGET_result['data']["customer_id"]
+        activity_id = changed['data']['activity_id']
+        customer_id = changed['data']["customer_id"]
 
         # POST to add new row into pendingReviews
         if bookingUpdate_result['code'] in range(200,300):

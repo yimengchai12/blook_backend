@@ -329,19 +329,20 @@
                         })
                 },
                 buy(){
-                    fetch('http://localhost:5006/create-checkout-session', {
+                    fetch('http://localhost:8000/api/payment', {
+                    // fetch('http://localhost:5006/create-checkout-session', {
                             method: "POST",
                             headers: {
                                 "Content-type": "application/json"
                             },
                             body: JSON.stringify(
                                 {
-    "customer_id": "1",
-    "activity_id": "1",
-    "payment_amount": "100",
-    "total_pax" : "3",
-    "datetime" : "2022-12-31"
-})
+                                    "customer_id": "1",
+                                    "activity_id": "1",
+                                    "payment_amount": "100",
+                                    "total_pax" : "3",
+                                    "datetime" : "2022-12-31"
+                                })
                         } )
                         .then(response => response.json())
                         .then(data => {

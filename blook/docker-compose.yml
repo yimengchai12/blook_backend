@@ -5,6 +5,21 @@ volumes:
 
 
 services:
+
+  ####################################
+  # RabbitMQ: The messaging broker   
+  ####################################
+  rabbitmq:
+    image: rabbitmq:3-management
+    hostname: esd-rabbit
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes: 
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - kong-net
  
   ###################################
   # Booking: The Booking microservice
@@ -89,21 +104,6 @@ services:
       PYTHONUNBUFFERED: 1
     ports: 
       - "5010:5010"
-    networks:
-      - kong-net
-
-  ####################################
-  # RabbitMQ: The messaging broker   
-  ####################################
-  rabbitmq:
-    image: rabbitmq:3-management
-    hostname: esd-rabbit
-    restart: always
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    volumes: 
-      - rabbitmq_data:/var/lib/rabbitmq
     networks:
       - kong-net
       
@@ -217,7 +217,7 @@ services:
     environment:
       rabbit_host: rabbitmq
       rabbit_port: 5672
-      booking_URL: "http://booking:5002/booking"
+      booking_URL: "http://blocalhost:5002/booking"
       customer_URL: "http://localhost:5003/customer"
       activity_URL: "http://127.0.0.1:5001/activity"
       PYTHONUNBUFFERED: 1
@@ -237,7 +237,7 @@ services:
     environment:
       rabbit_host: rabbitmq
       rabbit_port: 5672
-      booking_URL: "http://booking:5002/booking"
+      booking_URL: "http://localhost:5002/booking"
       customer_URL: "http://localhost:5003/customer"
       activity_URL: "http://127.0.0.1:5001/activity"
       PYTHONUNBUFFERED: 1

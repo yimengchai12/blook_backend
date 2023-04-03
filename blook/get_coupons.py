@@ -56,7 +56,7 @@ def get_coupons(customer_id):
             # customer_id = booking_details["customer_id"]
             coupon_result = invoke_http(coupon_URL + "/" + str(customer_point))
             print('coupon_result:', coupon_result)
-
+            
             code = coupon_result["code"]
             message = json.dumps(coupon_result)
             if code not in range(200, 300):

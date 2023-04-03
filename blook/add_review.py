@@ -62,8 +62,8 @@ def addReview(order):
 
 
     activity_ID = order["activity_id"]
-    print("Sending DELETE to:  " + review_URL + "pendingReview/" + str(customer_ID) + "/" + str(activity_ID))
-    pendingReview = invoke_http(review_URL + "pendingReview/" + str(customer_ID) + "/" + str(activity_ID), method='DELETE', json=None)
+    print("Sending DELETE to:  " + review_URL + "/review/pendingReview/" + str(customer_ID) + "/" + str(activity_ID))
+    pendingReview = invoke_http(review_URL + "/review/pendingReview/" + str(customer_ID) + "/" + str(activity_ID), method='DELETE', json=None)
     print(f"{pendingReview}\n")
     code = pendingReview["code"]
     if code not in range(200, 300):
@@ -73,7 +73,7 @@ def addReview(order):
                 "message": "pendingReview retrieval failure."
             }
     
-    
+
     return {
         "code": 400,
         'message': 'Review complex service successfully completed'

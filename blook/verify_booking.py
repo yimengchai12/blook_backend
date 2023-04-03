@@ -16,7 +16,7 @@ CORS(app)
 
 booking_URL = "http://booking:5002/booking"
 send_email_URL = "http://send_email:5020/send_email"
-pendingReview_URL = "http://review:5004/pendingReview"
+pendingReview_URL = "http://review:5004/review/pendingReview"
 
 @app.route("/verify_booking", methods=['POST'])
 def receiveVerification():

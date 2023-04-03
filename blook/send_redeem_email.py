@@ -42,22 +42,19 @@ def callback(channel, method, properties, body): # required signature for the ca
 
     # Check if the order contains valid JSON
     print("\n-----Email request received-----")
-    order = None
-    if request.is_json:
-        order = request.get_json()
-        print(order)
-        print("***Successfully received email request in JSON format***")
-        print("processing email")
-        result = sendRedeemEmail(json.loads(body))
-        return jsonify(result), result["code"]
-    else:
-        data = request.get_data()
-        print("Received an invalid order:")
-        print(data)
-        return jsonify({"code": 400,
-                        # make the data string as we dunno what could be the actual format
-                        "data": str(data),
-                        "message": "Order should be in JSON."}), 400  # Bad Request input
+    
+    print("***Successfully received email request in JSON format***")
+    print("processing email")
+    result = sendRedeemEmail(json.loads(body))
+    return jsonify(result), result["code"]
+
+        # data = request.get_data()
+        # print("Received an invalid order:")
+        # print(data)
+        # return jsonify({"code": 400,
+        #                 # make the data string as we dunno what could be the actual format
+        #                 "data": str(data),
+        #                 "message": "Order should be in JSON."}), 400  # Bad Request input
 
 
 def sendRedeemEmail(order):
@@ -71,7 +68,8 @@ def sendRedeemEmail(order):
     print('customer_result:', customer_result)
     print(customer_result)
     customer_name = customer_result["data"]["first_name"] + " " + customer_result["data"]["last_name"]
-    customer_email = customer_result["data"]["email"]
+    # customer_email = customer_result["data"]["email"]
+    customer_email = "yimengchai12@gmail.com"
     print(f"\nBooking for {customer_name} with the email {customer_email}")
 
     # GET Activity details

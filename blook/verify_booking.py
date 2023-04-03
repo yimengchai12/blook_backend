@@ -77,20 +77,20 @@ def sendVerification(booking_id):
             print(f"Successfully added: {pending_review_result}")
 
 
-            if pending_review_result['code'] in range(200,300):
-
-                print('\n\n-----Publishing the (redeem info) message with routing_key=order.redeem-----')        
-                amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="order.redeem", 
-                    body=message, properties=pika.BasicProperties(delivery_mode = 2))
             
-                print("\nOrder published to RabbitMQ Exchange.\n")
 
-                print("\nBooking status ({:d}) published to the RabbitMQ Exchange:".format(
-                code), bookingUpdate_result)
+            print('\n\n-----Publishing the (redeem info) message with routing_key=order.redeem-----')        
+            amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="order.redeem", 
+                body=message, properties=pika.BasicProperties(delivery_mode = 2))
+        
+            print("\nOrder published to RabbitMQ Exchange.\n")
 
-                print("\n---Verifiying booking success---\n")
+            print("\nBooking status ({:d}) published to the RabbitMQ Exchange:".format(
+            code), bookingUpdate_result)
 
-                return bookingUpdate_result
+            print("\n---Verifiying booking success---\n")
+
+            return bookingUpdate_result
 
 
 

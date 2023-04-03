@@ -40,18 +40,40 @@ def addReview(order):
     print("Sending POST to:  " + review_URL + "review")
     create_review_result = invoke_http(review_URL + "review", method='POST', json=order)
     print(f"{create_review_result}\n")
+    code = create_review_result["code"]
+    if code not in range(200, 300):
+        return {
+                "code": 500,
+                "data": {"review": create_review_result},
+                "message": "Review creation failure."
+            }
 
     customer_ID = order["customer_id"]
     print("Sending PUT to:  " + customer_URL + str(customer_ID) + "/add_review")
     customer_result = invoke_http(customer_URL + str(customer_ID) + "/add_review", method='PUT', json=None)
     print(f"{customer_result}\n")
+    code = create_review_result["code"]
+    if code not in range(200, 300):
+        return {
+                "code": 500,
+                "data": {"customer": customer_result},
+                "message": "Customer retrieval failure."
+            }
 
 
     activity_ID = order["activity_id"]
     print("Sending DELETE to:  " + review_URL + "pendingReview/" + str(customer_ID) + "/" + str(activity_ID))
     pendingReview = invoke_http(review_URL + "pendingReview/" + str(customer_ID) + "/" + str(activity_ID), method='DELETE', json=None)
     print(f"{pendingReview}\n")
-
+    code = pendingReview["code"]
+    if code not in range(200, 300):
+        return {
+                "code": 500,
+                "data": {"pendingReview": pendingReview},
+                "message": "pendingReview retrieval failure."
+            }
+    
+    
     return {
         "code": 400,
         'message': 'Review complex service successfully completed'

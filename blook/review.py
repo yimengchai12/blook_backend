@@ -339,7 +339,16 @@ def delete_pending_review(customer_id, activity_id):
     pending_review = pendingReview.query.filter_by(customer_id=customer_id, activity_id=activity_id).first()
 
     if not pending_review:
-        return {'error': 'Pending review not found.'}, 404
+        return jsonify(
+        {
+            "code": 404,
+            "data": {
+                "customer_id": customer_id,
+                "activity_id": activity_id
+            },
+            "message": "Pending review not found."
+        }
+        ), 404
 
     db.session.delete(pending_review)
     db.session.commit()

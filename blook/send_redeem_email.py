@@ -37,7 +37,6 @@ def receiveRedeemEmailRequest():
 
 def callback(channel, method, properties, body): # required signature for the callback; no return
     print("\nReceived a email request by " + __file__)
-    sendRedeemEmail(json.loads(body))
     print() # print a new line feed
 
 
@@ -49,7 +48,7 @@ def callback(channel, method, properties, body): # required signature for the ca
         print(order)
         print("***Successfully received email request in JSON format***")
         print("processing email")
-        result = sendEmail(order)
+        result = sendRedeemEmail(json.loads(body))
         return jsonify(result), result["code"]
     else:
         data = request.get_data()

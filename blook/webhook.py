@@ -162,22 +162,7 @@ def stripe_webhook():
             # code = email_result["code"]
             # message = json.dumps(email_result)
 
-    if event["type"] == "charge.succeeded":
-        return jsonify(
-{
-                "code": 200,
-                "message": "There are chargre."
-            }
-        ), 200
 
-    return jsonify(
-        {
-            "code": 200,
-            "message": "There are no books."
-        }
-    ), 200
-
-    # TODO: run some custom code here
 
 
 if __name__ == '__main__':

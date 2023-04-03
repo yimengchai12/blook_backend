@@ -88,7 +88,7 @@ def sendEmail(order):
     print("------Preparing to send email--------")
     message = Mail(
     from_email='julianooi80@gmail.com',
-    to_emails='yimengchai12@gmail.com',
+    to_emails=customer_email,
     subject='Your booking has been confirmed',
     html_content=f'<h2>Dear {customer_name}</h2>, <br> <h3>Your booking for <strong>{activity_name}</strong> for a total of {total_pax} pax has been confirmed. Your booking ID is <strong>{booking_ID}</strong>.<br>We hope you enjoy your time!</h3>')
 

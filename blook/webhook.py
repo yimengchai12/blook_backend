@@ -93,17 +93,13 @@ def stripe_webhook():
         if code not in range(200, 300):
         # Inform the error microservice
         #print('\n\n-----Invoking error microservice as order fails-----')
-            print('\n\n-----Publishing the (booking error) message with routing_key=order.error-----')
-
-        # invoke_http(error_URL, method="POST", json=order_result)
-            amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="order.error", 
-            body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
+            
         # make message persistent within the matching queues until it is received by some receiver 
         # (the matching queues have to exist and be durable and bound to the exchange)
 
         # - reply from the invocation is not used;
         # continue even if this invocation fails        
-            print("\nBooking status ({:d}) published to the RabbitMQ Exchange:".format(
+            print("\nBooking status ({:d}) published:".format(
             code), booking_result)
 
         # 7. Return error
@@ -155,12 +151,6 @@ def stripe_webhook():
                 message = json.dumps(coupon_result)
 
 
-            # print('\n-----Invoking email microservice-----')
-    
-            # email_result = invoke_http(send_email_URL, method='POST', json=booking_result['data'])
-            # print('email_result:', email_result)
-            # code = email_result["code"]
-            # message = json.dumps(email_result)
 
 
 

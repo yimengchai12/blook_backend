@@ -84,7 +84,7 @@ def sendRedeemEmail(order):
     print("------Preparing to send email--------")
     message = Mail(
     from_email='julianooi80@gmail.com',
-    to_emails="yimengchai12@gmail.com",
+    to_emails=customer_email,
     subject='Thank you! Leave a review!',
     html_content=f'<h2>Dear {customer_name}</h2>, <br> <h3>Thank you for booking <strong>{activity_name}</strong> with us. We hope you enjoyed you time with us! Do leave us a review to let us know how we can improve! Posting a review will earn you 100 points</h3>')
 

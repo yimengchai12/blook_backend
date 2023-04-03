@@ -16,8 +16,8 @@ CORS(app)
 
 customer_URL = "http://customer:5003/customer"
 coupon_URL = "http://coupon:5013/coupon" 
-error_URL = "http://localhost:5008/error"
-# payment_URL = "http://payment:5006/payment"
+
+
 
 
 # to get coupons available for customer based on their points
@@ -38,11 +38,10 @@ def get_coupons(customer_id):
         customer_point = customer_result["data"]["point"]
         message = json.dumps(customer_result)
         if code not in range(200, 300):
-            print('\n\n-----Invoking error microservice as order fails-----')
-            invoke_http(error_URL, method="POST", json=customer_result)
+           
             # - reply from the invocation is not used; 
             # continue even if this invocation fails
-            print("customer status ({:d}) sent to the error microservice:".format(
+            print("customer status ({:d}) sent:".format(
                 code), customer_result)
 
             # 7. Return error
@@ -60,11 +59,9 @@ def get_coupons(customer_id):
             code = coupon_result["code"]
             message = json.dumps(coupon_result)
             if code not in range(200, 300):
-                print('\n\n-----Invoking error microservice as order fails-----')
-                invoke_http(error_URL, method="POST", json=coupon_result)
-                # - reply from the invocation is not used; 
-                # continue even if this invocation fails
-                print("customer status ({:d}) sent to the error microservice:".format(
+            
+            
+                print("customer status ({:d}) sent:".format(
                     code), coupon_result)
 
                 # 7. Return error
@@ -109,11 +106,8 @@ def get_coupons_customer(customer_id, coupon_point):
         coupon_id = coupon_result["data"]["coupon"]["coupon_id"]
         message = json.dumps(coupon_result)
         if code not in range(200, 300):
-            print('\n\n-----Invoking error microservice as order fails-----')
-            invoke_http(error_URL, method="POST", json=coupon_result)
-            # - reply from the invocation is not used; 
-            # continue even if this invocation fails
-            print("customer status ({:d}) sent to the error microservice:".format(
+           
+            print("customer status ({:d}) sent :".format(
                 code), coupon_result)
 
             # 7. Return error
@@ -131,11 +125,10 @@ def get_coupons_customer(customer_id, coupon_point):
         customer_point = customer_result["data"]["point"]
         message = json.dumps(customer_result)
         if code not in range(200, 300):
-            print('\n\n-----Invoking error microservice as order fails-----')
-            invoke_http(error_URL, method="POST", json=customer_result)
+            
             # - reply from the invocation is not used; 
             # continue even if this invocation fails
-            print("customer status ({:d}) sent to the error microservice:".format(
+            print("customer status ({:d}) sent:".format(
                 code), customer_result)
 
             # 7. Return error
@@ -152,11 +145,7 @@ def get_coupons_customer(customer_id, coupon_point):
         code = coupon_customer_result["code"]
         message = json.dumps(coupon_customer_result)
         if code not in range(200, 300):
-            print('\n\n-----Invoking error microservice as order fails-----')
-            invoke_http(error_URL, method="POST", json=coupon_customer_result)
-            # - reply from the invocation is not used; 
-            # continue even if this invocation fails
-            print("customer status ({:d}) sent to the error microservice:".format(
+            print("customer status ({:d}) sent:".format(
                 code), coupon_customer_result)
 
             # 7. Return error

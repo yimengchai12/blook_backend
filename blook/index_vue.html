@@ -376,7 +376,8 @@
                         "customer_id": 1, 
                         "activity_id": 1
                     })
-                    fetch('http://localhost:5012/get_booking_details/1/1', {
+                    // fetch('http://localhost:5012/get_booking_details/1/1', {
+                    fetch('http://localhost:8000/get_booking_details/1/1', {
                             method: "GET"
                            
 
@@ -389,7 +390,8 @@
                 },
 
                 paywithcoupon(){
-                    fetch('http://localhost:5006/create-checkout-session/1', {
+                    // fetch('http://localhost:5006/create-checkout-session/1', {
+                    fetch('http://localhost:8000/api/payment/1', {
                             method: "POST",
                             headers: {
                                 "Content-type": "application/json"
@@ -401,7 +403,6 @@
                                     "payment_amount": "100",
                                     "total_pax" : "3",
                                     "datetime" : "2022-12-31",
-                                    "coupon_id": "1"
                                 })
                         } )
                         .then(response => response.json())

@@ -111,20 +111,20 @@ services:
   ###################################
   # Error: The Error microservice
   ###################################
-  error:
-    build:
-      context: ./
-      dockerfile: error.Dockerfile
-    image: error:esd
-    restart: always
-    depends_on:
-      - rabbitmq
-    environment:
-      rabbit_host: rabbitmq
-      rabbit_port: 5672
-      PYTHONUNBUFFERED: 1
-    networks:
-      - kong-net
+  # error:
+  #   build:
+  #     context: ./
+  #     dockerfile: error.Dockerfile
+  #   image: error:esd
+  #   restart: always
+  #   depends_on:
+  #     - rabbitmq
+  #   environment:
+  #     rabbit_host: rabbitmq
+  #     rabbit_port: 5672
+  #     PYTHONUNBUFFERED: 1
+  #   networks:
+  #     - kong-net
 
   get_booking_details:
     build:

@@ -333,7 +333,8 @@
                     // fetch('http://localhost:5006/create-checkout-session', {
                             method: "POST",
                             headers: {
-                                "Content-type": "application/json"
+                                "Content-type": "application/json",
+                                
                             },
                             body: JSON.stringify(
                                 {
@@ -414,10 +415,12 @@
                 },
                 verifybooking(){
                     // fetch('http://localhost:5030/verify_booking', {
-                    fetch('http://localhost:8000/api/verify_booking', {
+                    fetch('http://192.168.73.199:3333/api/verify_booking', {
                             method: "POST",
                             headers: {
-                                "Content-type": "application/json"
+                                "Content-type": "application/json",
+                                // "apikey": "D9k4mgox7W5oW0FgrdfS6ojptqdkDtBY"
+                                // "apikey": "Yyt1u7vUT6RaskHhvB3XfEhmeZgeTYL4"
                             },
                             body: JSON.stringify(
                                 {

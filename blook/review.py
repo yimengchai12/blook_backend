@@ -20,6 +20,7 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 db = SQLAlchemy(app)
 
 activity_URL = "http://activity:5001/activity"
+customer_URL = "http://customer:5003/customer"
 
 CORS(app)
 
@@ -94,11 +95,37 @@ def get_all():
 @app.route('/reviews/customer/<int:customer_id>')
 def get_reviews_by_customer(customer_id):
     reviews = Review.query.filter_by(customer_id=customer_id).all()
-    review_list = [review.json() for review in reviews]
+    if reviews:
+        output = []
+        mem = {}
+        activity_result = invoke_http(activity_URL)
+        activity_data = activity_result['data']['activities']
+
+        for review in reviews:
+            activity_name1 = False
+            for activity in activity_data:
+                activity_id = review.activity_id
+                activity_id_microservice = activity['id']
+                if activity_id == activity_id_microservice:
+                    activity_name1 = activity['name']
+
+                if activity_name1:
+                    mem['activity_name'] = activity_name1
+                    mem['review_id'] = review.review_id
+                    mem['customer_id'] = review.customer_id
+                    mem['activity_id'] = review.activity_id
+                    mem['rating'] = review.rating
+                    mem['review_text'] = review.review_text
+                    mem['created'] = review.created
+                
+                if mem not in output and mem != {}:
+                    output.append(mem)
+                mem = {}
+
     return jsonify(
         {
             "code" : 200,
-            "data" : review_list
+            "data" : output
         }
     ), 200
 
@@ -106,11 +133,55 @@ def get_reviews_by_customer(customer_id):
 @app.route("/review/<string:activity_id>")
 def find_by_activity_id(activity_id):
     reviewlist = Review.query.filter_by(activity_id=activity_id).all()
+
     if reviewlist:
+        output = []
+        mem = {}
+        activity_result = invoke_http(activity_URL)
+        customer_result = invoke_http(customer_URL)
+
+        activity_data = activity_result['data']['activities']
+        customer_data = customer_result['data']['customers']
+
+        for review in reviewlist:
+
+            activity_name1 = False
+            customer_firstname1 = False
+            customer_lastname1 = False
+
+
+            for activity in activity_data:
+                activity_id = review.activity_id
+                activity_id_microservice = activity['id']
+                if activity_id == activity_id_microservice:
+                    activity_name1 = activity['name']
+
+            for customer in customer_data:
+                customer_id = review.customer_id
+                customer_id_microservice = customer['id']
+                if customer_id == customer_id_microservice:
+                    customer_firstname1 = customer['first_name']
+                    customer_lastname1 = customer['last_name']
+                        
+            if activity_name1:
+                mem['activity_name'] = activity_name1
+                mem['review_id'] = review.review_id
+                mem['customer_id'] = review.customer_id
+                mem['activity_id'] = review.activity_id
+                mem['rating'] = review.rating
+                mem['review_text'] = review.review_text
+                mem['created'] = review.created
+                mem['customer_firstname'] = customer_firstname1
+                mem['customer_lastname'] = customer_lastname1
+                
+                if mem not in output:
+                    output.append(mem)
+                mem = {}
+
         return jsonify(
             {
                 "code": 200,
-                "data": [review.json() for review in reviewlist]
+                "data": output
             }
         )
     return jsonify(

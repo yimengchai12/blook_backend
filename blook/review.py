@@ -92,7 +92,7 @@ def get_all():
     ), 404
 
 
-@app.route('/reviews/customer/<int:customer_id>')
+@app.route('/review/customer/<int:customer_id>')
 def get_reviews_by_customer(customer_id):
     reviews = Review.query.filter_by(customer_id=customer_id).all()
     if reviews:

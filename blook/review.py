@@ -266,7 +266,7 @@ def update_review(review_id):
 
 
 # GET all pending reviews for a customer
-@app.route("/pendingReview/<string:customer_id>", methods=['GET'])
+@app.route("/review/pendingReview/<string:customer_id>", methods=['GET'])
 def find_pending_reviews(customer_id):
     reviewlist = pendingReview.query.filter_by(customer_id=customer_id).all()
     if reviewlist:
@@ -306,7 +306,7 @@ def find_pending_reviews(customer_id):
 
 
 # Add new row when booking has been verified (new review pending by customer)
-@app.route("/pendingReview", methods=['POST'])
+@app.route("/review/pendingReview", methods=['POST'])
 def add_pending_review():
     activity_id = request.json.get('activity_id')
     customer_id = request.json.get('customer_id')
@@ -334,7 +334,7 @@ def add_pending_review():
 
 
 # DELETE first occurence of activity_id X customer_id when review has been added
-@app.route('/pendingReview/<int:customer_id>/<int:activity_id>', methods=['DELETE'])
+@app.route('/review/pendingReview/<int:customer_id>/<int:activity_id>', methods=['DELETE'])
 def delete_pending_review(customer_id, activity_id):
     pending_review = pendingReview.query.filter_by(customer_id=customer_id, activity_id=activity_id).first()
 

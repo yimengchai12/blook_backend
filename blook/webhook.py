@@ -145,11 +145,11 @@ def stripe_webhook():
                 print('\n-----Invoking coupon microservice-----')
                 coupon_id = booking["coupon_id"]
                 coupon_result = invoke_http(
-                    coupon_URL + "/" + customer_id + "/" + coupon_id, method='DELETE')
+                    coupon_URL + "/" + customer_id + "/" + coupon_id, method='DELETE')  
                 print('coupon_result:', coupon_result)
                 code = coupon_result["code"]
                 message = json.dumps(coupon_result)
-                
+
 
 
 

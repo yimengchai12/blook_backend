@@ -2,11 +2,11 @@
 2. [Getting Started](#getting-started)
 
 ## <a name="about"></a>About
-This is the blook backend where the microservices and API are stored.
+This is the blook-backend where the microservices and API are stored. blook-backend can be run in a Docker container. 
 
 ## <a name="getting-started"></a>Getting Started
-*Import SQL files*
+Install Docker and docker-compose.
 Import all the SQL files into your local device
 
-*Install dependencies*
+*To build the docker image run this command from the docker folder:*
 > $ docker-compose up

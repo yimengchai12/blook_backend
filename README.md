@@ -10,3 +10,6 @@ Import all the SQL files into your local device
 
 *To build the docker image run this command from the docker folder:*
 > $ docker-compose up
+
+*You can Reset the Database and the docker containers with:*
+> $ docker-compose down

@@ -68,8 +68,8 @@ def sendRedeemEmail(order):
     print('customer_result:', customer_result)
     print(customer_result)
     customer_name = customer_result["data"]["first_name"] + " " + customer_result["data"]["last_name"]
-    # customer_email = customer_result["data"]["email"]
-    customer_email = "yimengchai12@gmail.com"
+    customer_email = customer_result["data"]["email"]
+    # customer_email = "yimengchai12@gmail.com"
     print(f"\nBooking for {customer_name} with the email {customer_email}")
 
     # GET Activity details

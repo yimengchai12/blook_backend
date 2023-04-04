@@ -31,13 +31,13 @@ channel.exchange_declare(exchange=exchangename, exchange_type=exchangetype, dura
 
 ############   Error queue   #############
 #delcare Error queue
-queue_name = 'Error' #?##
-channel.queue_declare(queue=queue_name, durable=True) 
-    # 'durable' makes the queue survive broker restarts
+# queue_name = 'Error' #?##
+# channel.queue_declare(queue=queue_name, durable=True) 
+#     # 'durable' makes the queue survive broker restarts
 
-routing_key = '*.error' #?##
-#bind Error queue
-channel.queue_bind(exchange=exchangename, queue=queue_name, routing_key=routing_key) 
+# routing_key = '*.error' #?##
+# #bind Error queue
+# channel.queue_bind(exchange=exchangename, queue=queue_name, routing_key=routing_key) 
     # bind the queue to the exchange via the key
     # any routing_key with two words and ending with '.error' will be matched
 

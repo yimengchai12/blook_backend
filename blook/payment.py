@@ -13,6 +13,9 @@ from flask_cors import CORS
 
 import os, sys
 from os import environ
+from dotenv import load_dotenv
+
+load_dotenv()
 
 import requests
 from invokes import invoke_http
@@ -25,9 +28,7 @@ from invokes import invoke_http
 
 
 # This is your test secret API key.
-stripe.api_key = "sk_test_51Miv0mDVT8kjXSeFhyISeAE8DvBk8A2i1naRDbWDYNEblx1IiBTkbG5fXBG38daqRngJSiq1cpx25hSkZ1OPNrTN00oqJCRNJF"
-
-# 'sk_test_51MqXdHE3thje2p8MDiPdiAf9rL1wQHZirFYfmKIetPDBkvyX2avd9BtxfIJ1BpThFRSTyoBSGBbk48BQygVYXkWo00kAK2chaW'
+stripe.api_key = os.getenv("STRIPE_KEY")
 
 app = Flask(__name__,
             static_url_path='',

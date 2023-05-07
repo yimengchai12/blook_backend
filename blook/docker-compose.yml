@@ -89,6 +89,8 @@ services:
       - "5006:5006"
     networks:
       - kong-net
+    env_file:
+      - stripe_cli.env
 
   webhook:
     build:
@@ -106,6 +108,8 @@ services:
       - "5010:5010"
     networks:
       - kong-net
+    env_file:
+      - stripe_cli.env
       
 
   ###################################

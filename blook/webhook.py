@@ -3,6 +3,10 @@ from flask import Flask, redirect, request, jsonify
 from flask_cors import CORS
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from dotenv import load_dotenv
+
+load_dotenv()
+# print("adfafas " + os.getenv("STRIPE_KEY"))
 
 import os
 import sys
@@ -23,9 +27,9 @@ send_email_URL = "http://send_email:5020/send_email"
 coupon_URL = "http://coupon:5013/coupon" 
 
 # This is your test secret API key.
-stripe.api_key = "sk_test_51Miv0mDVT8kjXSeFhyISeAE8DvBk8A2i1naRDbWDYNEblx1IiBTkbG5fXBG38daqRngJSiq1cpx25hSkZ1OPNrTN00oqJCRNJF"
+stripe.api_key = os.getenv("STRIPE_KEY")
+# "sk_test_51Miv0mDVT8kjXSeFhyISeAE8DvBk8A2i1naRDbWDYNEblx1IiBTkbG5fXBG38daqRngJSiq1cpx25hSkZ1OPNrTN00oqJCRNJF"
 
-# 'sk_test_51MqXdHE3thje2p8MDiPdiAf9rL1wQHZirFYfmKIetPDBkvyX2avd9BtxfIJ1BpThFRSTyoBSGBbk48BQygVYXkWo00kAK2chaW'
 
 app = Flask(__name__,
             static_url_path='',
@@ -58,7 +62,7 @@ CORS(app)
 def stripe_webhook():
     payload = request.get_data(as_text=True)
     sig_header = request.headers.get("Stripe-Signature")
-    endpoint_secret = 'whsec_9a44ebec0d6a46d09a2238b75e46a20583d3d28b8256c9809e69157e5ee9c373'
+    endpoint_secret = os.getenv("endpoint_secret")
     try:
         event = stripe.Webhook.construct_event(
             payload, sig_header, endpoint_secret

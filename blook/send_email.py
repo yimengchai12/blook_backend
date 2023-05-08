@@ -8,8 +8,10 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import requests
 from invokes import invoke_http
+from dotenv import load_dotenv
 
 import amqp_setup
+load_dotenv()
 
 # monitorBindingKey='#'
 
@@ -93,7 +95,7 @@ def sendEmail(order):
     html_content=f'<h2>Dear {customer_name}</h2>, <br> <h3>Your booking for <strong>{activity_name}</strong> for a total of {total_pax} pax has been confirmed. Your booking ID is <strong>{booking_ID}</strong>.<br>We hope you enjoy your time!</h3>')
 
     try:
-        sg = SendGridAPIClient("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")
+        sg = SendGridAPIClient(os.getenv("sendgrid_api"))
         response = sg.send(message)
         code = response.status_code
         print("Email successfully send!\nStatus code: ", code)

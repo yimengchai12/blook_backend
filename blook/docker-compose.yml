@@ -229,6 +229,8 @@ services:
       - "5020:5020"
     networks:
       - kong-net
+    env_file:
+      - stripe_cli.env
 
   send_redeem_email:
     build:
@@ -249,6 +251,8 @@ services:
       - "5022:5022"
     networks:
       - kong-net
+    env_file:
+      - stripe_cli.env
 
 
   ##################################
